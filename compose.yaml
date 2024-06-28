@@ -1,0 +1,7 @@
+services:
+  temperature-sensor:
+    build: .
+    ports:
+      - '3008:3008'
+    # environment:
+    #   - NODE_ENV=production
