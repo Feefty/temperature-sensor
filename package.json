@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@nestjs/common": "^10.3.9",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "name": "temperature-sensor",
+  "version": "1.0.0",
+  "description": "Temperature sensor exercice for application",
+  "main": "main.ts",
+  "repository": "https://github.com/joachimaok/temperature-sensor",
+  "author": "Koami Kpognon",
+  "license": "MIT"
+}
