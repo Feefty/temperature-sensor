@@ -1,8 +1,17 @@
-import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common'
+import { GraphQLModule } from '@nestjs/graphql'
+import { join } from 'path'
+import { TemperatureSensorModule } from './temperature-sensor/temperature-sensor.module'
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 
 @Module({
-  imports: [],
-  controllers: [],
-  providers: [],
+    imports: [
+        GraphQLModule.forRoot<ApolloDriverConfig>({
+            autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+            sortSchema: true,
+            driver: ApolloDriver,
+        }),
+        TemperatureSensorModule,
+    ],
 })
 export class AppModule {}
