@@ -1,73 +1,105 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Temperature API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This application is an API to monitor temperatures, with the ability to set thresholds for sensor states (HOT, COLD, WARM) using GraphQL. The application is built with NestJS and follows hexagonal architecture principles.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Prerequisites
 
-## Description
+- Docker
+- Docker Compose
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+# Usage
 
-## Installation
+## Start the Application with Docker Compose
+
+To start the application with Docker Compose, use the following command:
+
+```bash
+$ docker compose -f compose.yaml up --build
+``````
+
+This will start the Docker containers for the application.
+
+## Access GraphQL Playground
+
+Once the containers are up and running, you can access the GraphQL Playground to interact with the GraphQL API: http://localhost:3000/graphql
+
+## Example GraphQL Queries
+
+### Get Current Temperature
+
+```gql
+query {
+  getCurrentTemperature {
+    value
+    timestamp
+  }
+}
+```
+
+### Get Temperature History
+
+```gql
+query {
+  getTemperatureHistory {
+    value
+    timestamp
+  }
+}
+``````
+
+### Set Temperature Thresholds
+
+```gql
+mutation {
+  setThresholds(hot: 36, cold: 20)
+}
+```
+
+### Get Sensor State
+
+```gql
+query {
+  getSensorState {
+    id
+    state
+  }
+}
+```
+
+# Tech Stack
+- Node.js: Runtime environment for the server.
+- NestJS: Framework used to structure the application.
+- GraphQL: Used for the API.
+- Jest: Used for testing.
+- Docker: Used for containerization.
+- Docker Compose: Used to orchestrate the Docker containers.
+
+# Development
+
+## Install Dependencies
+
+If you want to develop and test locally without Docker, you can install the dependencies with Yarn:
 
 ```bash
 $ yarn install
 ```
 
-## Running the app
+## Start the Application in Development Mode
 
 ```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+$ yarn start:dev
 ```
 
-## Test
+## Run Tests
 
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+$ yarn test
 ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+# Project Structure
+- `src/app.module.ts`: Main module of the application.
+- `src/domain`: Contains domain entities and interfaces.
+- `src/application`: Contains application use cases.
+- `src/infrastructure`: Contains adapters, services, and repositories.
+- `src/config`: Contains configuration services.
+- `src/temperature-sensor`: Contains temperature and sensor related services, resolvers, and modules.
