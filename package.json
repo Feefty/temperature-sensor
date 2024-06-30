@@ -1,0 +1,41 @@
+{
+  "name": "feefty",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "ts-node-dev --poll ./src/index.ts",
+    "build": "rm -rf ../feefty/dist && tsc",
+    "postbuild": "cp ../feefty/.env dist/",
+    "start": "docker-compose up --build",
+    "stop": "docker-compose down",
+    "test": "../feefty/node_modules/.bin/jest src/tests/unit/*.test.ts",
+    "pretest:e2e": "docker-compose up --build -d",
+    "posttest:e2e": "docker-compose down",
+    "test:e2e": "../feefty/node_modules/.bin/jest src/tests/e2e/api.e2e.test.ts"
+  },
+  "dependencies": {
+    "@types/morgan": "^1.9.9",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "http-status-codes": "^2.3.0",
+    "morgan": "~1.9.1",
+    "mysql2": "^3.10.1",
+    "reflect-metadata": "^0.2.2",
+    "supertest": "^7.0.0",
+    "typeorm": "^0.3.20",
+    "winston": "^3.13.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.9",
+    "@types/supertest": "^6.0.2",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.2"
+  }
+}
