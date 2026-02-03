@@ -1,5 +1,15 @@
 # Kata
 
+##  How to start the project 
+
+```bash
+docker compose up --build 
+```
+## How to test 
+```bash 
+pnpm i # Make sure to have deps installed 
+pnpm test 
+```
 ## **Objectives**
 
 - Demonstrate what you can do within a reasonable time and show how you code in real-life situations.
