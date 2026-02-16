@@ -7,7 +7,7 @@
 - The API must adhere to a Hexagonal or Clean Code architecture and must include tests.
 
 ## **Delivery**
-- Fork this repo and create a PR on the `main` branch so that we can provide feedback.
+- Fork this repo and create a PR on the `develop` branch so that we can provide feedback.
 
 ## **Application**
 For this project, we need an API that:
