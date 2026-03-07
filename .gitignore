@@ -399,3 +399,6 @@ FodyWeavers.xsd
 
 # Jest coverage report - regenerate with npm test
 coverage/
+
+# Environment variables
+.env
