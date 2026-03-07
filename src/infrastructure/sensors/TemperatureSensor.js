@@ -1,7 +1,12 @@
-class ITemperatureSensor {
+const ITemperatureSensor = require('../../domain/ports/ITemperatureSensor');
+
+class TemperatureSensor extends ITemperatureSensor {
   getTemperature() {
-    throw new Error('getTemperature() must be implemented');
+    // To simulate a real sensore i generate a random value between 15°C and 45°C
+    return Promise.resolve(
+      parseFloat((Math.random() * 30 + 15).toFixed(2))
+    );
   }
 }
 
-module.exports = ITemperatureSensor;
+module.exports = TemperatureSensor;
