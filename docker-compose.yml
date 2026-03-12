@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: harvest-db
+    environment:
+      POSTGRES_USER: harvest
+      POSTGRES_PASSWORD: harvest
+      POSTGRES_DB: harvest_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U harvest -d harvest_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: harvest-app
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://harvest:harvest@postgres:5432/harvest_db?schema=public
+      PORT: 3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - full
+
+volumes:
+  pgdata:
