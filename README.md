@@ -1,30 +1,85 @@
-# Kata
+# Temperature Sensor API
 
-## **Objectives**
+API REST pour la lecture de température, la classification d'état (HOT/COLD/WARM) et la gestion des seuils.
 
-- Demonstrate what you can do within a reasonable time and show how you code in real-life situations.
-- This project should soon go into production regarding the quality of the code.
-- The API must adhere to a Hexagonal or Clean Code architecture and must include tests.
+## Stack
 
-## **Delivery**
-- Fork this repo and create a PR on the `develop` branch so that we can provide feedback.
+- **TypeScript** + **Express**
+- **PostgreSQL** + **Prisma**
+- **Jest** + **Supertest**
+- **Zod** (validation) + **Swagger** (documentation)
+- **Docker**
 
-## **Application**
-For this project, we need an API that:
+## Architecture
 
-1. Retrieves the temperature from a `TemperatureSensor` component (returns the temperature in degrees Celsius).
-2. Sets the state of the Sensor to “HOT” when the captured temperature is greater than or equal to 35°C.
-3. Sets the state of the Sensor to “COLD” when the captured temperature is less than 22°C.
-4. Sets the state of the Sensor to “WARM” when the captured temperature is greather than or equal to 22°C and less than 35°C.
-5. Retrieves the history of the last fifteen temperature requests.
-6. Allows redefining the thresholds for “HOT”, “COLD”, and “WARM”.
+Architecture hexagonale organisée par couche :
 
+```
+src/
+  domain/          → Entités, ports (interfaces), erreurs métier
+  application/     → Use cases (orchestration)
+  infrastructure/  → Adapters (sensor, repositories), HTTP (controllers, routes), config
+```
 
-## **Minimal Stack**
+Le domaine n'a aucune dépendance sur l'infrastructure. Les use cases dépendent uniquement des ports (interfaces). L'infrastructure implémente les ports.
 
-- Node.js
-- Docker
-- Jest
+## Prérequis
 
-## Reference
-- [Git Commit Messages: Best Practices & Guidelines](https://initialcommit.com/blog/git-commit-messages-best-practices)
+- Node.js >= 20
+- Docker & Docker Compose
+
+## Installation
+
+```bash
+# Cloner le repo
+git clone <repo-url>
+cd Harvest
+
+# Installer les dépendances
+npm install
+
+# Démarrer PostgreSQL
+docker compose up -d
+
+# Lancer les migrations
+npx prisma migrate dev
+
+# Démarrer le serveur
+npm run dev
+```
+
+Le serveur démarre sur `http://localhost:3000`.
+La documentation Swagger est disponible sur `http://localhost:3000/api-docs`.
+
+## Endpoints
+
+| Méthode | Route | Description |
+|---------|-------|-------------|
+| GET | `/temperature` | Lire la température, classifier et sauvegarder |
+| GET | `/temperature/history` | Historique des 15 dernières lectures |
+| GET | `/temperature/thresholds` | Seuils actuels |
+| PUT | `/temperature/thresholds` | Modifier les seuils |
+
+## Tests
+
+```bash
+# Tous les tests
+npm test
+
+# Tests unitaires uniquement
+npm run test:unit
+
+# Tests d'intégration uniquement
+npm run test:integration
+
+# Avec couverture
+npm run test:coverage
+```
+
+## Docker (déploiement complet)
+
+```bash
+docker compose --profile full up --build
+```
+
+Cela démarre PostgreSQL + l'application sur le port 3000.
