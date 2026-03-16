@@ -1,11 +1,6 @@
-import type { TemperatureState } from '../../domain/temperature-state';
+import type { HistoryEntry } from '../../domain/temperature-state';
 
 const MAX_HISTORY_SIZE = 15;
-
-export interface HistoryEntry {
-  temperature: number;
-  state: TemperatureState;
-}
 
 export class InMemoryHistoryRepository {
   private readonly entries: HistoryEntry[] = [];
