@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { prisma } from "../../database/PrismaClient";
 import { SensorSchema } from "../../../domain/entities/Sensor";
-import { PrismaSensorRepository } from "../../persistences/PrismaSensor.repository";
-import { PrismaHistoryRepository } from "../../persistences/PrismaHistory.repository";
+import { PrismaSensorRepository } from "../../repositories/PrismaSensor.repository";
+import { PrismaHistoryRepository } from "../../repositories/PrismaHistory.repository";
 import { FakeTemperatureSensor } from "../../adapters/FakeTemperatureSensor";
 import { GetTemperatureStateUseCaseImpl } from "../../../application/usecases/getTemperatureState.use-case";
 

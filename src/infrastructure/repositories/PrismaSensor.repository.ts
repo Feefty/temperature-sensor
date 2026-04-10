@@ -1,6 +1,7 @@
 import { PrismaClient } from "../../../db/generated/client";
 import { SensorRepository } from "../../domain/ports/Sensor.repository";
 import { Sensor, SensorEntity } from "../../domain/entities/Sensor";
+import { AppError } from "../../domain/entities/Error";
 
 export class PrismaSensorRepository implements SensorRepository {
 
@@ -11,7 +12,7 @@ export class PrismaSensorRepository implements SensorRepository {
     async get(): Promise<SensorEntity> {
         const sensor = await this.prisma.sensor.findFirst()
         if (!sensor) {
-            throw new Error("Sensor not found");
+            throw new AppError("Sensor not found", 404);
         }
         return new SensorEntity(sensor.maxTemperature, sensor.minTemperature);
     }
