@@ -48,5 +48,5 @@ USER appuser
 
 EXPOSE 5000
 
-# Start compiled JS instead of using ts-node
-CMD ["npm", "start"]
+# Start compiled JS instead of using npm wrapper for better OS signal handling
+CMD ["node", "dist/src/server.js"]
