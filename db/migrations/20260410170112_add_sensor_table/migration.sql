@@ -2,7 +2,7 @@
 CREATE TYPE "State" AS ENUM ('HOT', 'COLD', 'WARM');
 
 -- CreateTable
-CREATE IF NOT EXISTS TABLE "Sensor" (
+CREATE TABLE IF NOT EXISTS "Sensor" (
     "id" SERIAL NOT NULL,
     "maxTemperature" DOUBLE PRECISION NOT NULL,
     "minTemperature" DOUBLE PRECISION NOT NULL,
@@ -13,7 +13,7 @@ CREATE IF NOT EXISTS TABLE "Sensor" (
 );
 
 -- CreateTable
-CREATE IF NOT EXISTS TABLE "TemperatureHistory" (
+CREATE TABLE IF NOT EXISTS "TemperatureHistory" (
     "id" SERIAL NOT NULL,
     "temperature" DOUBLE PRECISION NOT NULL,
     "state" "State" NOT NULL,

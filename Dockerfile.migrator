@@ -1,0 +1,36 @@
+# -- Stage 1: Build & Compile --
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+COPY tsconfig.json ./
+
+RUN npm install
+
+COPY db/ ./db/
+
+RUN npx prisma generate --schema=db/prisma.schema
+RUN npm run build
+
+# -- Stage 2: Migrator Environment --
+FROM node:20-alpine AS migrator
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Add a non-root user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+COPY --chown=appuser:appgroup package*.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+
+COPY --chown=appuser:appgroup db/ ./db/
+COPY --chown=appuser:appgroup prisma.config.ts ./
+COPY --chown=appuser:appgroup --from=builder /app/dist ./dist
+COPY --chown=appuser:appgroup --from=builder /app/db/generated ./db/generated
+USER appuser
+
+# Migrator just runs migrations and seed, then exits
+CMD npm run migration:run && npm run migration:seed
