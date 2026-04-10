@@ -3,7 +3,7 @@ import { prisma } from "../../database/PrismaClient";
 import { SensorSchema } from "../../../domain/entities/Sensor";
 import { PrismaSensorRepository } from "../../repositories/PrismaSensor.repository";
 import { PrismaHistoryRepository } from "../../repositories/PrismaHistory.repository";
-import { FakeTemperatureSensor } from "../../adapters/FakeTemperatureSensor";
+import { SimulatedTemperatureSensor } from "../../adapters/SimulatedTemperatureSensor";
 import { GetTemperatureStateUseCaseImpl } from "../../../application/usecases/getTemperatureState.use-case";
 import { UpdateThresholdUseCaseImpl } from "../../../application/usecases/updateThreshold.use-case";
 
@@ -21,13 +21,17 @@ export const temperatureRouter = Router();
  *       500:
  *         description: Internal Server Error
  */
-temperatureRouter.get("/", async (req, res) => {
-    const sensorRepository = new PrismaSensorRepository(prisma);
-    const temperatureSensorRepository = new FakeTemperatureSensor();
-    const historyRepository = new PrismaHistoryRepository(prisma);
-    const getStateUseCase = new GetTemperatureStateUseCaseImpl(sensorRepository, temperatureSensorRepository, historyRepository);
-    const state = await getStateUseCase.execute();
-    res.send(state);
+temperatureRouter.get("/", async (req, res, next) => {
+    try {
+        const sensorRepository = new PrismaSensorRepository(prisma);
+        const temperatureSensorRepository = new SimulatedTemperatureSensor();
+        const historyRepository = new PrismaHistoryRepository(prisma);
+        const getStateUseCase = new GetTemperatureStateUseCaseImpl(sensorRepository, temperatureSensorRepository, historyRepository);
+        const state = await getStateUseCase.execute();
+        res.send(state);
+    } catch (error) {
+        next(error);
+    }
 })
 
 
@@ -43,10 +47,14 @@ temperatureRouter.get("/", async (req, res) => {
  *       500:
  *         description: Internal Server Error
  */
-temperatureRouter.get("/sensor", async (req, res) => {
-    const sensorRepository = new PrismaSensorRepository(prisma);
-    const sensorConfig = await sensorRepository.get();
-    res.send(sensorConfig);
+temperatureRouter.get("/sensor", async (req, res, next) => {
+    try {
+        const sensorRepository = new PrismaSensorRepository(prisma);
+        const sensorConfig = await sensorRepository.get();
+        res.send(sensorConfig);
+    } catch (error) {
+        next(error);
+    }
 })
 
 /**
@@ -83,13 +91,17 @@ temperatureRouter.get("/sensor", async (req, res) => {
  *       500:
  *         description: Internal Server Error
  */
-temperatureRouter.post("/sensor", async (req, res) => {
-    const { maxTemperature, minTemperature } = req.body;
-    const sensor = SensorSchema.parse({ maxTemperature, minTemperature });
-    const sensorRepository = new PrismaSensorRepository(prisma);
-    const updateThresholdUseCase = new UpdateThresholdUseCaseImpl(sensorRepository);
-    await updateThresholdUseCase.execute(sensor.maxTemperature, sensor.minTemperature);
-    res.send("Sensor updated successfully");
+temperatureRouter.post("/sensor", async (req, res, next) => {
+    try {
+        const { maxTemperature, minTemperature } = req.body;
+        const sensor = SensorSchema.parse({ maxTemperature, minTemperature });
+        const sensorRepository = new PrismaSensorRepository(prisma);
+        const updateThresholdUseCase = new UpdateThresholdUseCaseImpl(sensorRepository);
+        await updateThresholdUseCase.execute(sensor.maxTemperature, sensor.minTemperature);
+        res.send("Sensor updated successfully");
+    } catch (error) {
+        next(error);
+    }
 })
 
 /**
@@ -104,8 +116,12 @@ temperatureRouter.post("/sensor", async (req, res) => {
  *       500:
  *         description: Internal Server Error
  */
-temperatureRouter.get("/history", async (req, res) => {
-    const historyRepository = new PrismaHistoryRepository(prisma);
-    const history = await historyRepository.getMany(15, "desc")
-    res.send(history);
+temperatureRouter.get("/history", async (req, res, next) => {
+    try {
+        const historyRepository = new PrismaHistoryRepository(prisma);
+        const history = await historyRepository.getMany(15, "desc")
+        res.send(history);
+    } catch (error) {
+        next(error);
+    }
 })
