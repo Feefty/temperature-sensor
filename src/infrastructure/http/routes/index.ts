@@ -1,6 +1,8 @@
 import { Router } from "express";
-import { temperatureRouter } from "./temperature.route";
+import { TemperatureControllerFactory } from "../../factories/temperatureControllerFactory";
+import { temperatureRouteBuilder } from "./temperature.route";
+
 
 export const router = Router();
 
-router.use("/temperature", temperatureRouter);
+router.use("/temperature", temperatureRouteBuilder(TemperatureControllerFactory()));

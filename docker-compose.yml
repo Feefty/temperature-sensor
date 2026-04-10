@@ -44,10 +44,6 @@ services:
     depends_on:
       migrator:
         condition: service_completed_successfully
-    volumes:
-      - ./src:/app/src
-      # Uncomment if you want hot reload without using docker volumes for node_modules:
-      # - /app/node_modules
 
 volumes:
   postgres_data:
