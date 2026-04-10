@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { TemperatureSensor } from "./TemperatureSensor";
+import { AppError } from "./Error";
 
 export const SensorSchema = z.object({
     maxTemperature: z.number(),
@@ -21,7 +22,7 @@ export class SensorEntity implements Sensor {
 
     constructor(maxTemperature: number, minTemperature: number) {
         if (minTemperature >= maxTemperature) {
-            throw new Error("minTemperature must be less than maxTemperature");
+            throw new AppError("minTemperature must be less than maxTemperature", 422);
         }
         this.maxTemperature = maxTemperature;
         this.minTemperature = minTemperature;
