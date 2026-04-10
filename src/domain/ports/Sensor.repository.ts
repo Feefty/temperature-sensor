@@ -1,6 +1,6 @@
-import { Sensor, SensorEntity } from "../entities/Sensor";
+import { Sensor } from "../entities/Sensor";
 
 export interface SensorRepository {
-    get(): Promise<SensorEntity>;
+    get(): Promise<Sensor>;
     save(sensor: Sensor): Promise<void>;
 }

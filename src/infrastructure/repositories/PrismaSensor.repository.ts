@@ -1,34 +1,40 @@
 import { PrismaClient } from "../../../db/generated/client";
 import { SensorRepository } from "../../domain/ports/Sensor.repository";
-import { Sensor, SensorEntity } from "../../domain/entities/Sensor";
-import { AppError } from "../../domain/entities/Error";
+import { Sensor } from "../../domain/entities/Sensor";
 
 export class PrismaSensorRepository implements SensorRepository {
-
 
     constructor(private readonly prisma: PrismaClient) {
 
     }
-    async get(): Promise<SensorEntity> {
-        const sensor = await this.prisma.sensor.findFirst()
-        if (!sensor) {
-            throw new AppError("Sensor not found", 404);
-        }
-        return new SensorEntity(sensor.maxTemperature, sensor.minTemperature);
+    async get(): Promise<Sensor> {
+        const maxTemperature = await this.prisma.sensorConfig.findUniqueOrThrow({ where: { key: "maxTemperature" } })
+        const minTemperature = await this.prisma.sensorConfig.findUniqueOrThrow({ where: { key: "minTemperature" } })
+        return { maxTemperature: maxTemperature.value, minTemperature: minTemperature.value };
     }
     async save(sensor: Sensor): Promise<void> {
-        await this.prisma.sensor.upsert({
+        await this.prisma.sensorConfig.upsert({
             where: {
-                id: 1,
+                key: "maxTemperature",
             },
             update: {
-                maxTemperature: sensor.maxTemperature,
-                minTemperature: sensor.minTemperature,
+                value: sensor.maxTemperature,
             },
             create: {
-                id: 1,
-                maxTemperature: sensor.maxTemperature,
-                minTemperature: sensor.minTemperature,
+                key: "maxTemperature",
+                value: sensor.maxTemperature,
+            },
+        });
+        await this.prisma.sensorConfig.upsert({
+            where: {
+                key: "minTemperature",
+            },
+            update: {
+                value: sensor.minTemperature,
+            },
+            create: {
+                key: "minTemperature",
+                value: sensor.minTemperature,
             },
         });
     }

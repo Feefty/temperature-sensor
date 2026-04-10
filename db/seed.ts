@@ -7,15 +7,20 @@ const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 async function main() {
-    await prisma.sensor.upsert({
-        where: { id: 1 },
-        update: {},
-        create: {
-            maxTemperature: 35,
-            minTemperature: 22,
-        },
-    });
+    await prisma.sensorConfig.createMany({
+        data: [
+            {
+                key: "maxTemperature",
+                value: 35,
+            },
+            {
+                key: "minTemperature",
+                value: 22,
+            },
+        ],
+    })
 }
+
 main()
     .then(async () => {
         await prisma.$disconnect();

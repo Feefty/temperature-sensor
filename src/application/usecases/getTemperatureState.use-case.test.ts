@@ -1,5 +1,4 @@
 import { GetTemperatureStateUseCaseImpl } from "./getTemperatureState.use-case";
-import { SensorEntity } from "../../domain/entities/Sensor";
 import { SensorRepository } from "../../domain/ports/Sensor.repository";
 import { TemperatureSensorRepository } from "../../domain/ports/TemperatureSensor.repository";
 import { HistoryRepository } from "../../domain/ports/History.repository";
@@ -35,7 +34,7 @@ describe("GetStateUseCaseImpl", () => {
 
     it("should return HOT when temperature is above max threshold", async () => {
         mockTemperatureSensorRepository.get.mockResolvedValue({ temperature: 30 });
-        mockSensorRepository.get.mockResolvedValue(new SensorEntity(25, 15));
+        mockSensorRepository.get.mockResolvedValue({ maxTemperature: 25, minTemperature: 15 });
 
         const result = await getTemperatureStateUseCase.execute();
 
@@ -49,7 +48,7 @@ describe("GetStateUseCaseImpl", () => {
 
     it("should return COLD when temperature is below min threshold", async () => {
         mockTemperatureSensorRepository.get.mockResolvedValue({ temperature: 10 });
-        mockSensorRepository.get.mockResolvedValue(new SensorEntity(25, 15));
+        mockSensorRepository.get.mockResolvedValue({ maxTemperature: 25, minTemperature: 15 });
 
         const result = await getTemperatureStateUseCase.execute();
 
@@ -63,7 +62,7 @@ describe("GetStateUseCaseImpl", () => {
 
     it("should return WARM when temperature is within boundaries", async () => {
         mockTemperatureSensorRepository.get.mockResolvedValue({ temperature: 20 });
-        mockSensorRepository.get.mockResolvedValue(new SensorEntity(25, 15));
+        mockSensorRepository.get.mockResolvedValue({ maxTemperature: 25, minTemperature: 15 });
 
         const result = await getTemperatureStateUseCase.execute();
 

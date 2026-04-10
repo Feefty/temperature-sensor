@@ -1,3 +1,4 @@
+import { SensorEntity } from "../../domain/entities/Sensor";
 import { TemperatureHistory } from "../../domain/entities/TemperatureHistory";
 import { HistoryRepository } from "../../domain/ports/History.repository";
 import { SensorRepository } from "../../domain/ports/Sensor.repository";
@@ -13,10 +14,10 @@ export class GetTemperatureStateUseCaseImpl implements GetTemperatureStateUseCas
     async execute(): Promise<TemperatureHistory> {
         const temperatureSensor = await this.temperatureSensor.get()
         const sensor = await this.sensorRepository.get()
-
+        const sensorEntity = new SensorEntity(sensor.maxTemperature, sensor.minTemperature)
         const historyEntry = {
             temperature: temperatureSensor.temperature,
-            state: sensor.evaluate(temperatureSensor),
+            state: sensorEntity.evaluate(temperatureSensor),
             timestamp: new Date(),
         }
         await this.historyRepository.save(historyEntry)

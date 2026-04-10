@@ -7,10 +7,10 @@ datasource db {
   provider = "postgresql"
 }
 
-model Sensor {
+model SensorConfig {
   id Int @id @default(autoincrement())
-  maxTemperature Float
-  minTemperature Float
+  key String @unique
+  value Float
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
