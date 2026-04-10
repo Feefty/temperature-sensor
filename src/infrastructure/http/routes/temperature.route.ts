@@ -4,8 +4,6 @@ import { SensorSchema } from "../../../domain/entities/Sensor";
 import { PrismaSensorRepository } from "../../persistences/PrismaSensor.repository";
 import { PrismaHistoryRepository } from "../../persistences/PrismaHistory.repository";
 import { FakeTemperatureSensor } from "../../adapters/FakeTemperatureSensor";
-import { GetHistoryUseCaseImpl } from "../../../application/usecases/getHistory.use-case";
-import { UpdateThresholdUseCaseImpl } from "../../../application/usecases/updateThreshold.use-case";
 import { GetTemperatureStateUseCaseImpl } from "../../../application/usecases/getTemperatureState.use-case";
 
 export const temperatureRouter = Router();
@@ -47,10 +45,7 @@ temperatureRouter.get("/", async (req, res) => {
 temperatureRouter.get("/sensor", async (req, res) => {
     const sensorRepository = new PrismaSensorRepository(prisma);
     const sensorConfig = await sensorRepository.get();
-    res.send({
-        maxTemperature: sensorConfig.maxTemperature,
-        minTemperature: sensorConfig.minTemperature
-    });
+    res.send(sensorConfig);
 })
 
 /**
@@ -90,8 +85,8 @@ temperatureRouter.get("/sensor", async (req, res) => {
 temperatureRouter.post("/sensor", async (req, res) => {
     const { maxTemperature, minTemperature } = req.body;
     const sensor = SensorSchema.parse({ maxTemperature, minTemperature });
-    const updateSensorUseCase = new UpdateThresholdUseCaseImpl(new PrismaSensorRepository(prisma));
-    await updateSensorUseCase.execute(sensor);
+    const sensorRepository = new PrismaSensorRepository(prisma);
+    await sensorRepository.save(sensor);
     res.send("Sensor updated successfully");
 })
 
@@ -109,7 +104,6 @@ temperatureRouter.post("/sensor", async (req, res) => {
  */
 temperatureRouter.get("/history", async (req, res) => {
     const historyRepository = new PrismaHistoryRepository(prisma);
-    const getHistoryUseCase = new GetHistoryUseCaseImpl(historyRepository);
-    const history = await getHistoryUseCase.execute();
+    const history = await historyRepository.getMany(15, "desc")
     res.send(history);
 })
