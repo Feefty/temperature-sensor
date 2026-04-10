@@ -5,10 +5,7 @@ import { AppError } from "./Error";
 export const SensorSchema = z.object({
     maxTemperature: z.number(),
     minTemperature: z.number()
-}).refine(data => data.minTemperature < data.maxTemperature, {
-    message: "minTemperature must be less than maxTemperature",
-    path: ["minTemperature"]
-});
+})
 
 export const StateSchema = z.enum(["HOT", "COLD", "WARM"]);
 

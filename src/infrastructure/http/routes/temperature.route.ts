@@ -5,6 +5,7 @@ import { PrismaSensorRepository } from "../../repositories/PrismaSensor.reposito
 import { PrismaHistoryRepository } from "../../repositories/PrismaHistory.repository";
 import { FakeTemperatureSensor } from "../../adapters/FakeTemperatureSensor";
 import { GetTemperatureStateUseCaseImpl } from "../../../application/usecases/getTemperatureState.use-case";
+import { UpdateThresholdUseCaseImpl } from "../../../application/usecases/updateThreshold.use-case";
 
 export const temperatureRouter = Router();
 
@@ -86,7 +87,8 @@ temperatureRouter.post("/sensor", async (req, res) => {
     const { maxTemperature, minTemperature } = req.body;
     const sensor = SensorSchema.parse({ maxTemperature, minTemperature });
     const sensorRepository = new PrismaSensorRepository(prisma);
-    await sensorRepository.save(sensor);
+    const updateThresholdUseCase = new UpdateThresholdUseCaseImpl(sensorRepository);
+    await updateThresholdUseCase.execute(sensor.maxTemperature, sensor.minTemperature);
     res.send("Sensor updated successfully");
 })
 
