@@ -13,29 +13,31 @@ export class PrismaSensorRepository implements SensorRepository {
         return { maxTemperature: maxTemperature.value, minTemperature: minTemperature.value };
     }
     async save(sensor: Sensor): Promise<void> {
-        await this.prisma.sensorConfig.upsert({
-            where: {
-                key: "maxTemperature",
-            },
-            update: {
-                value: sensor.maxTemperature,
-            },
-            create: {
-                key: "maxTemperature",
-                value: sensor.maxTemperature,
-            },
-        });
-        await this.prisma.sensorConfig.upsert({
-            where: {
-                key: "minTemperature",
-            },
-            update: {
-                value: sensor.minTemperature,
-            },
-            create: {
-                key: "minTemperature",
-                value: sensor.minTemperature,
-            },
-        });
+        await this.prisma.$transaction([
+            this.prisma.sensorConfig.upsert({
+                where: {
+                    key: "maxTemperature",
+                },
+                update: {
+                    value: sensor.maxTemperature,
+                },
+                create: {
+                    key: "maxTemperature",
+                    value: sensor.maxTemperature,
+                },
+            }),
+            this.prisma.sensorConfig.upsert({
+                where: {
+                    key: "minTemperature",
+                },
+                update: {
+                    value: sensor.minTemperature,
+                },
+                create: {
+                    key: "minTemperature",
+                    value: sensor.minTemperature,
+                },
+            }),
+        ])
     }
 }
