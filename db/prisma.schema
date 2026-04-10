@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Sensor {
+  id Int @id @default(autoincrement())
+  maxTemperature Float
+  minTemperature Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+enum State {
+  HOT
+  COLD
+  WARM
+}
+
+model TemperatureHistory {
+  id Int @id @default(autoincrement())
+  temperature Float
+  state State
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}

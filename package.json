@@ -6,18 +6,27 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec \"node --env-file=.env -r ts-node/register\" src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "migration:seed": "prisma db seed",
+    "migration:generate": "prisma migrate dev --create-only --schema=db/prisma.schema",
+    "migration:run": "prisma migrate deploy --schema=db/prisma.schema",
+    "migration:undo": "prisma migrate reset --schema=db/prisma.schema"
   },
   "dependencies": {
+    "@prisma/client": "^7.7.0",
     "express": "^5.2.1",
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@prisma/adapter-pg": "^7.7.0",
     "@types/express": "^5.0.6",
     "@types/node": "^25.6.0",
+    "@types/pg": "^8.20.0",
     "dotenv": "^17.4.1",
     "jest": "^30.3.0",
     "nodemon": "^3.1.14",
+    "pg": "^8.20.0",
+    "prisma": "^7.7.0",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.2"
   }
