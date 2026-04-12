@@ -1,30 +1,85 @@
-# Kata
+# Temperature Sensor API
 
-## **Objectives**
+A REST API that captures temperature readings from a sensor.
 
-- Demonstrate what you can do within a reasonable time and show how you code in real-life situations.
-- This project should soon go into production regarding the quality of the code.
-- The API must adhere to a Hexagonal or Clean Code architecture and must include tests.
+---
+## HowTo
 
-## **Delivery**
-- Fork this repo and create a PR on the `develop` branch so that we can provide feedback.
+### Run with Docker
 
-## **Application**
-For this project, we need an API that:
+```bash
+docker-compose up --build
+```
 
-1. Retrieves the temperature from a `TemperatureSensor` component (returns the temperature in degrees Celsius).
-2. Sets the state of the Sensor to “HOT” when the captured temperature is greater than or equal to 35°C.
-3. Sets the state of the Sensor to “COLD” when the captured temperature is less than 22°C.
-4. Sets the state of the Sensor to “WARM” when the captured temperature is greather than or equal to 22°C and less than 35°C.
-5. Retrieves the history of the last fifteen temperature requests.
-6. Allows redefining the thresholds for “HOT”, “COLD”, and “WARM”.
+### Run tests
 
+```bash
+npm test
+```
 
-## **Minimal Stack**
+---
 
-- Node.js
-- Docker
-- Jest
+## API Endpoints with Examples for testing
 
-## Reference
-- [Git Commit Messages: Best Practices & Guidelines](https://initialcommit.com/blog/git-commit-messages-best-practices)
+All endpoints are under the base URL `http://localhost:3000`.
+
+### `POST /temperature/capture`
+
+Captures a temperature reading from the sensor, classifies it, and stores it in history.
+
+**Request body:** none
+
+**Response** `200 OK`:
+```json
+{
+  "temperature": 28.4,
+  "state": "WARM",
+}
+```
+
+---
+
+### `GET /temperature/history`
+
+Returns the last 15 captured temperature readings.
+
+**Request body:** none
+
+**Response** `200 OK`:
+```json
+[
+  {
+    "temperature": 28.4,
+    "state": "WARM",
+  }
+]
+```
+
+---
+
+### `PATCH /temperature/thresholds`
+
+Updates the HOT and COLD thresholds used to classify temperatures.
+
+**Request body:**
+```json
+{
+  "hot": 40,
+  "cold": 18
+}
+```
+
+**Response** `200 OK`:
+```json
+{
+  "hotThreshold": 40,
+  "coldThreshold": 18
+}
+```
+
+**Error** `400 Bad Request` (when `cold >= hot`):
+```json
+{
+  "error": "Invalid thresholds: coldThreshold 40 must be strictly less than hotThreshold 10"
+}
+```
