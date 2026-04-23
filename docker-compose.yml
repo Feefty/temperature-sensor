@@ -1,0 +1,46 @@
+services:
+  mysql:
+    image: mysql:8.0.35
+    container_name: temperature-sensor-mysql
+    restart: unless-stopped
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DB:-temperature_sensor}
+      MYSQL_USER: ${MYSQL_USER:-temperature_sensor}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-temperature_sensor}
+    ports:
+      - '${MYSQL_PORT_PUBLISH:-3306}:3306'
+    volumes:
+      - temperature_sensor_mysql_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1', '-uroot', '-proot']
+      interval: 3s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: temperature-sensor-api
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    env_file:
+      - ./.env.docker
+    environment:
+      NODE_ENV: docker
+      # override `.env.docker` for container networking
+      DATABASE_HOST: mysql
+    ports:
+      - '${SERVER_PORT_PUBLISH:-3000}:3000'
+
+volumes:
+  temperature_sensor_mysql_data:
