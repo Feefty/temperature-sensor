@@ -2,6 +2,7 @@
   "name": "temperature-sensor",
   "version": "1.0.0",
   "description": "Hexagonal Temperature Sensor API",
+  "type": "commonjs",
   "main": "dist/main.js",
   "scripts": {
     "dev": "tsx src/main.ts",
