@@ -1,4 +1,4 @@
 export interface Thresholds {
-  coldMax: number; // < coldMax => COLD
-  hotMin: number;  // >= hotMin => HOT
+  coldMax: number;
+  hotMin: number;
 }
