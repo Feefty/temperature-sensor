@@ -2,19 +2,21 @@ import { TemperatureSensor } from '../../domain/ports/TemperatureSensor';
 import { TemperatureHistoryRepository } from '../../domain/repositories/TemperatureHistoryRepository';
 import { SensorStateResolver } from '../../domain/services/SensorStateResolver';
 import { TemperatureReading } from '../../domain/entities/TemperatureReading';
-import { Thresholds } from '../../domain/entities/Thresholds';
+import { ThresholdRepository } from '../../domain/ports/ThresholdRepository';
 
 export class CaptureTemperatureUseCase {
   constructor(
     private sensor: TemperatureSensor,
     private history: TemperatureHistoryRepository,
-    private thresholds: Thresholds
+    private thresholdRepo: ThresholdRepository
   ) {}
 
   async execute(): Promise<TemperatureReading> {
     const temperature = await this.sensor.getTemperature();
 
-    const state = SensorStateResolver.resolve(temperature, this.thresholds);
+    const thresholds = await this.thresholdRepo.get();
+
+    const state = SensorStateResolver.resolve(temperature, thresholds);
 
     const reading: TemperatureReading = {
       value: temperature,
@@ -23,8 +25,6 @@ export class CaptureTemperatureUseCase {
     };
 
     await this.history.save(reading);
-
-    await this.history.findLast(15);
 
     return reading;
   }
