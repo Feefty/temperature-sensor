@@ -1,15 +1,27 @@
-import express from 'express';
+import { createApp } from './infrastructure/http/app';
+import { TemperatureController } from './infrastructure/http/controllers/TemperatureController';
+import { CaptureTemperatureUseCase } from './application/use-cases/CaptureTemperatureUseCase';
+import { InMemoryTemperatureHistoryRepository } from './infrastructure/repositories/InMemoryTemperatureHistoryRepository';
 
-const app = express();
+const app = createApp();
 
-app.use(express.json());
+const sensor = {
+  getTemperature: async () => 25,
+};
 
-app.get('/health', (_, res) => {
-  res.json({ status: 'ok' });
-});
+const repo = new InMemoryTemperatureHistoryRepository();
 
-const PORT = 3000;
+const thresholds = {
+  coldMax: 22,
+  hotMin: 35,
+};
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const useCase = new CaptureTemperatureUseCase(sensor, repo, thresholds);
+
+const controller = new TemperatureController(useCase);
+
+app.get('/temperature/capture', controller.capture);
+
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
 });
