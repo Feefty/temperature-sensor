@@ -1,0 +1,14 @@
+import { Router } from 'express';
+import type { TemperatureController } from './controllers/TemperatureController';
+import type { ThresholdsController } from './controllers/ThresholdsController';
+
+export function buildRouter(
+  temperature: TemperatureController,
+  thresholds: ThresholdsController,
+): Router {
+  const router = Router();
+  router.get('/temperature', temperature.capture);
+  router.get('/temperature/history', temperature.history);
+  router.put('/thresholds', thresholds.redefine);
+  return router;
+}
