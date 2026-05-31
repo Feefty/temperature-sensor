@@ -20,6 +20,8 @@ const server = app.listen(port, () => {
 function shutdown(signal: string): void {
   console.log(`Received ${signal}, shutting down`);
   server.close(() => process.exit(0));
+  // Idle keep-alive sockets would otherwise hold the server open until the force-exit timer.
+  server.closeIdleConnections();
   // Force exit if connections do not drain within the container stop grace period.
   setTimeout(() => process.exit(1), 10_000).unref();
 }
