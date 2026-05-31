@@ -19,7 +19,14 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/main.tsx', 'src/test/**', 'src/**/*.test.{ts,tsx}', 'src/**/*.d.ts'],
+      // Type-only modules (e.g. types.ts) emit no runtime code, so they have nothing to cover.
+      exclude: [
+        'src/main.tsx',
+        'src/test/**',
+        'src/**/*.test.{ts,tsx}',
+        'src/**/*.d.ts',
+        'src/types.ts',
+      ],
       thresholds: { branches: 90, functions: 95, lines: 90, statements: 90 },
     },
   },

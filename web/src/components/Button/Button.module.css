@@ -1,0 +1,75 @@
+.button {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xs) var(--space-md);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
+.spinnerSlot {
+  display: inline-flex;
+  align-items: center;
+}
+
+.primary {
+  background: var(--accent-fill);
+  color: var(--cta-text);
+  border-color: var(--cta-border);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.primary:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+/* A light sweep across the fill on hover; the global reduced-motion rule disables it. */
+.primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.5s ease;
+}
+
+.primary:not(:disabled):hover::before {
+  transform: translateX(120%);
+}
+
+.secondary {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--surface-border);
+}
+
+.secondary:not(:disabled):hover {
+  border-color: var(--surface-border-hover);
+}

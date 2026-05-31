@@ -1,0 +1,49 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.input {
+  padding: var(--space-2xs) var(--space-xs);
+  background: var(--field-bg);
+  border: 1px solid var(--field-border);
+  border-radius: var(--radius);
+  color: var(--text);
+}
+
+.input::placeholder {
+  color: var(--text-placeholder);
+}
+
+/* Drop the native number spinners; they look out of place and typing is enough here. */
+.input[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.input[type='number']::-webkit-outer-spin-button,
+.input[type='number']::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+/* A bare slider, not a framed box: drop the text-input chrome the base rule adds. */
+.input[type='range'] {
+  padding: 0;
+  border: none;
+  background: none;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.hint {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}

@@ -1,0 +1,54 @@
+.spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.square {
+  display: block;
+  /* currentColor so the loader is visible on any surface (ink on a button, accent elsewhere). */
+  background: currentColor;
+  border-radius: var(--radius-sm);
+  animation: square-spin 1s ease-in-out infinite;
+}
+
+/* sm scales with the surrounding text (em); md/lg are standalone, so they use rem. */
+.sm .square {
+  width: 0.85em;
+  height: 0.85em;
+}
+
+.md .square {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.lg .square {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+/* Visually hidden, still read out: the status text screen readers announce. */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes square-spin {
+  0% {
+    transform: rotate(0) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(0.6);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
