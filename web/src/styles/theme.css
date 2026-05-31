@@ -1,0 +1,31 @@
+/* Semantic tokens. Dark is the default; light is opt-in via [data-theme="light"]. */
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: var(--c-navy-deep);
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-border: rgba(51, 238, 135, 0.15);
+  --text: #e7ecf3;
+  --text-muted: var(--c-slate);
+  --accent: var(--c-green-bright);
+  --accent-fill: var(--c-green-cta);
+
+  --state-cold: var(--c-blue);
+  --state-warm: var(--c-green-cta);
+  --state-hot: var(--c-red);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: var(--c-grey-50);
+  --surface: var(--c-white);
+  --surface-border: var(--c-grey-100);
+  --text: var(--c-navy);
+  --text-muted: #5a6b7b;
+  --accent: var(--c-green-ink-aa);
+  --accent-fill: var(--c-green-ink-aa);
+
+  --state-cold: #075a91;
+  --state-warm: var(--c-green-ink-aa);
+  --state-hot: #c13a3f;
+}

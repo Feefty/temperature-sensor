@@ -1,0 +1,36 @@
+/* Brand primitives, reverse-engineered from harvest.fr. Theme-independent raw values. */
+:root {
+  --c-navy: #1e2648;
+  --c-navy-deep: #091b3b;
+  --c-navy-darkest: #030f25;
+  --c-ink: #012232;
+
+  --c-green-bright: #33ee87; /* on dark surfaces only */
+  --c-green-cta: #25d072;
+  --c-green-ink: #1fa637;
+  --c-green-ink-aa: #157a26; /* green text on light, passes WCAG AA */
+  --c-blue: #0670ba;
+  --c-red: #e5484d;
+  --c-amber: #f5a623;
+
+  --c-white: #ffffff;
+  --c-grey-50: #f6f6f8;
+  --c-grey-100: #efefef;
+  --c-slate: #8fa0b2;
+
+  --font-sans: 'Montserrat', system-ui, sans-serif;
+
+  --space-2xs: 0.44rem;
+  --space-xs: 0.67rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.25rem;
+  --space-xl: 3.38rem;
+
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-card: 16px;
+  --radius-pill: 100px;
+
+  --shadow-card: 0 16px 48px rgba(51, 238, 135, 0.08), 0 4px 16px rgba(0, 0, 0, 0.2);
+}
