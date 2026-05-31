@@ -1,6 +1,6 @@
 import { createApp } from './infrastructure/http/createApp';
 import { InMemoryReadingRepository } from './infrastructure/repositories/InMemoryReadingRepository';
-import { StubTemperatureSensor } from './infrastructure/sensor/StubTemperatureSensor';
+import { RandomTemperatureSensor } from './infrastructure/sensor/RandomTemperatureSensor';
 
 const port = Number(process.env.PORT ?? 3000);
 if (!Number.isInteger(port) || port < 1 || port > 65535) {
@@ -8,7 +8,7 @@ if (!Number.isInteger(port) || port < 1 || port > 65535) {
 }
 
 const app = createApp({
-  sensor: new StubTemperatureSensor(),
+  sensor: new RandomTemperatureSensor(),
   repository: new InMemoryReadingRepository(),
 });
 

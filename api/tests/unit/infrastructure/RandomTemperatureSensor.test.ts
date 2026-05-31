@@ -1,8 +1,8 @@
-import { StubTemperatureSensor } from '../../../src/infrastructure/sensor/StubTemperatureSensor';
+import { RandomTemperatureSensor } from '../../../src/infrastructure/sensor/RandomTemperatureSensor';
 
-describe('StubTemperatureSensor', () => {
+describe('RandomTemperatureSensor', () => {
   it('returns a finite temperature within the simulated range', async () => {
-    const sensor = new StubTemperatureSensor();
+    const sensor = new RandomTemperatureSensor();
 
     for (let i = 0; i < 50; i += 1) {
       const value = await sensor.read();

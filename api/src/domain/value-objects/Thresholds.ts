@@ -1,6 +1,6 @@
 import { ThresholdsInvariantError } from '../errors/DomainError';
 
-// WARM is derived (the [coldMax, hotMin) band); only the two bounds are stored.
+// WARM is everything between the two bounds, so it is computed, not stored.
 export interface Thresholds {
   readonly coldMax: number;
   readonly hotMin: number;
