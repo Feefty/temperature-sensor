@@ -3,6 +3,12 @@
 [data-theme='dark'] {
   color-scheme: dark;
   --bg: var(--c-navy-deep);
+  /* Soft navy glow at the top, echoing the harvest.fr hero. */
+  --bg-glow: radial-gradient(
+    1100px 620px at 50% -15%,
+    rgba(30, 38, 72, 0.85),
+    rgba(30, 38, 72, 0) 60%
+  );
   --surface: rgba(255, 255, 255, 0.04);
   --surface-border: rgba(51, 238, 135, 0.15);
   --surface-border-hover: rgba(51, 238, 135, 0.35);
@@ -10,8 +16,10 @@
   --text-muted: var(--c-slate);
   --text-placeholder: var(--c-slate);
   --accent: var(--c-green-bright);
+  /* The harvest CTA: green fill, navy label, a brighter green hairline border. */
   --accent-fill: var(--c-green-cta);
-  --cta-text: var(--c-ink);
+  --cta-text: var(--c-navy);
+  --cta-border: var(--c-green-bright);
   --field-bg: rgba(255, 255, 255, 0.04);
   --field-border: var(--c-slate);
   --shadow: 0 16px 48px rgba(51, 238, 135, 0.08), 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -28,6 +36,7 @@
 [data-theme='light'] {
   color-scheme: light;
   --bg: var(--c-grey-50);
+  --bg-glow: none;
   --surface: var(--c-white);
   --surface-border: var(--c-grey-100);
   --surface-border-hover: var(--c-slate);
@@ -35,17 +44,18 @@
   --text-muted: var(--c-slate-deep);
   --text-placeholder: var(--c-slate-deep);
   --accent: var(--c-green-ink-aa);
-  --accent-fill: var(--c-green-ink-aa);
-  /* White, not ink: on the darker light-theme green this is 5.5:1 (AA); ink would be 3:1. */
-  --cta-text: var(--c-white);
+  /* Same harvest CTA in both themes: green fill, navy label, brighter green border. */
+  --accent-fill: var(--c-green-cta);
+  --cta-text: var(--c-navy);
+  --cta-border: var(--c-green-bright);
   --field-bg: var(--c-white);
   --field-border: var(--c-slate-deep);
   --shadow: 0 8px 24px rgba(9, 27, 59, 0.12);
 
   --state-cold: var(--c-blue-deep);
-  --state-warm: var(--c-green-ink-aa);
+  --state-warm: var(--c-green-deep);
   --state-hot: var(--c-red-deep);
   --state-cold-tint: rgba(7, 90, 145, 0.1);
-  --state-warm-tint: rgba(21, 122, 38, 0.1);
-  --state-hot-tint: rgba(193, 58, 63, 0.1);
+  --state-warm-tint: rgba(15, 110, 31, 0.1);
+  --state-hot-tint: rgba(168, 47, 52, 0.1);
 }

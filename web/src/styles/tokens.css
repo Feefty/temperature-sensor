@@ -3,18 +3,18 @@
   --c-navy: #1e2648;
   --c-navy-deep: #091b3b;
   --c-navy-darkest: #030f25;
-  --c-ink: #012232;
 
   --c-green-bright: #33ee87; /* on dark surfaces only */
   --c-green-cta: #25d072;
   --c-green-ink: #1fa637;
-  --c-green-ink-aa: #157a26; /* green text on light, passes WCAG AA */
+  --c-green-ink-aa: #157a26; /* green text/fill on light, passes WCAG AA */
+  --c-green-deep: #0f6e1f; /* warm badge text on light, AA over the tint */
   --c-blue: #0670ba;
   --c-blue-bright: #4da3e0; /* cold on dark, AA */
-  --c-blue-deep: #075a91; /* cold on light, AA */
+  --c-blue-deep: #075a91; /* cold on light, AA over the tint */
   --c-red: #e5484d;
   --c-red-bright: #ff6b6b; /* hot on dark, AA */
-  --c-red-deep: #c13a3f; /* hot on light, AA */
+  --c-red-deep: #a82f34; /* hot badge text on light, AA over the tint */
   --c-amber: #f5a623;
 
   --c-white: #ffffff;
