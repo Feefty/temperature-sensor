@@ -6,7 +6,7 @@
   /* Soft navy glow at the top, echoing the harvest.fr hero. */
   --bg-glow: radial-gradient(
     1100px 620px at 50% -15%,
-    rgba(30, 38, 72, 0.85),
+    rgba(30, 38, 72, 0.7),
     rgba(30, 38, 72, 0) 60%
   );
   --surface: rgba(255, 255, 255, 0.04);
@@ -43,7 +43,7 @@
   --text: var(--c-navy);
   --text-muted: var(--c-slate-deep);
   --text-placeholder: var(--c-slate-deep);
-  --accent: var(--c-green-ink-aa);
+  --accent: var(--c-green-ui);
   /* Same harvest CTA in both themes: green fill, navy label, brighter green border. */
   --accent-fill: var(--c-green-cta);
   --cta-text: var(--c-navy);

@@ -19,6 +19,7 @@ body {
   background-image: var(--bg-glow, none);
   background-repeat: no-repeat;
   color: var(--text);
+  font-size: var(--text-base);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
@@ -28,6 +29,23 @@ h2,
 h3,
 h4 {
   line-height: 1.15;
+  font-weight: 600;
+}
+
+h1 {
+  font-size: var(--text-2xl);
+}
+
+h2 {
+  font-size: var(--text-xl);
+}
+
+h3 {
+  font-size: var(--text-lg);
+}
+
+h4 {
+  font-size: var(--text-md);
 }
 
 img,

@@ -2,20 +2,15 @@
 :root {
   --c-navy: #1e2648;
   --c-navy-deep: #091b3b;
-  --c-navy-darkest: #030f25;
 
   --c-green-bright: #33ee87; /* on dark surfaces only */
   --c-green-cta: #25d072;
-  --c-green-ink: #1fa637;
-  --c-green-ink-aa: #157a26; /* green text/fill on light, passes WCAG AA */
+  --c-green-ui: #199030; /* UI accent (focus, controls) on light: brand-green, >=3:1 non-text */
   --c-green-deep: #0f6e1f; /* warm badge text on light, AA over the tint */
-  --c-blue: #0670ba;
   --c-blue-bright: #4da3e0; /* cold on dark, AA */
   --c-blue-deep: #075a91; /* cold on light, AA over the tint */
-  --c-red: #e5484d;
   --c-red-bright: #ff6b6b; /* hot on dark, AA */
   --c-red-deep: #a82f34; /* hot badge text on light, AA over the tint */
-  --c-amber: #f5a623;
 
   --c-white: #ffffff;
   --c-grey-50: #f6f6f8;
@@ -25,6 +20,15 @@
   --c-text-dark: #e7ecf3;
 
   --font-sans: 'Montserrat Variable', system-ui, sans-serif;
+
+  /* Type scale. The two heading steps go fluid with clamp so they scale by viewport. */
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.25rem;
+  --text-lg: 1.5rem;
+  --text-xl: clamp(1.5rem, 1.25rem + 1.1vw, 1.875rem);
+  --text-2xl: clamp(2.25rem, 1.5rem + 3.2vw, 3.75rem);
 
   --space-2xs: 0.44rem;
   --space-xs: 0.67rem;
@@ -39,4 +43,6 @@
   --radius-pill: 100px;
 
   --blur-card: 14px;
+
+  --container-max: 75rem;
 }
