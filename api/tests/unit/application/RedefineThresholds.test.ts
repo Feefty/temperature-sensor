@@ -15,9 +15,9 @@ describe('RedefineThresholds', () => {
   it('rejects cold >= hot and leaves the existing thresholds untouched', async () => {
     const repository = new FakeReadingRepository();
 
-    await expect(new RedefineThresholds(repository).execute({ coldMax: 30, hotMin: 30 })).rejects.toThrow(
-      ThresholdsInvariantError,
-    );
+    await expect(
+      new RedefineThresholds(repository).execute({ coldMax: 30, hotMin: 30 }),
+    ).rejects.toThrow(ThresholdsInvariantError);
     expect(await repository.getThresholds()).toEqual({ coldMax: 22, hotMin: 35 });
   });
 });

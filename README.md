@@ -7,9 +7,11 @@
 - The API must adhere to a Hexagonal or Clean Code architecture and must include tests.
 
 ## **Delivery**
+
 - Fork this repo and create a PR on the `develop` branch so that we can provide feedback.
 
 ## **Application**
+
 For this project, we need an API that:
 
 1. Retrieves the temperature from a `TemperatureSensor` component (returns the temperature in degrees Celsius).
@@ -19,7 +21,6 @@ For this project, we need an API that:
 5. Retrieves the history of the last fifteen temperature requests.
 6. Allows redefining the thresholds for “HOT”, “COLD”, and “WARM”.
 
-
 ## **Minimal Stack**
 
 - Node.js
@@ -27,6 +28,7 @@ For this project, we need an API that:
 - Jest
 
 ## Reference
+
 - [Git Commit Messages: Best Practices & Guidelines](https://initialcommit.com/blog/git-commit-messages-best-practices)
 
 ---
@@ -66,13 +68,13 @@ curl -X PUT http://localhost:3000/api/v1/thresholds \
   -d '{ "coldMax": 22, "hotMin": 35 }'
 ```
 
-| Status | When |
-|--------|------|
-| `200` | success |
-| `400` | malformed body (wrong type, missing field, non-finite number) |
-| `422` | thresholds violate the `coldMax < hotMin` invariant |
-| `404` | unknown route |
-| `500` | unexpected failure (e.g. the sensor is unavailable) |
+| Status | When                                                          |
+| ------ | ------------------------------------------------------------- |
+| `200`  | success                                                       |
+| `400`  | malformed body (wrong type, missing field, non-finite number) |
+| `422`  | thresholds violate the `coldMax < hotMin` invariant           |
+| `404`  | unknown route                                                 |
+| `500`  | unexpected failure (e.g. the sensor is unavailable)           |
 
 ## Architecture
 
@@ -94,23 +96,24 @@ The domain has zero external imports.
 
 ## Key design decisions
 
-- **Boundaries: HOT inclusive, COLD exclusive.** `temp >= hotMin` is HOT, `temp < coldMax` is
-  COLD, the rest is WARM, so 22.0 is WARM and 35.0 is HOT. Tested at the boundaries.
-- **WARM is computed, not stored.** Only `coldMax` and `hotMin` are kept; the `coldMax < hotMin`
-  invariant lives in `createThresholds`, so an invalid Thresholds cannot exist.
-- **Redefining thresholds affects future readings only.** State is fixed at capture time, history
-  is never rewritten (there is a test for that).
-- **`Temperature` is a branded type**, so the finite-number check at the boundary keeps `NaN` and
-  `Infinity` out of the domain.
-- **One async `ReadingRepository` port.** History and thresholds are always used together, so two
-  ports would be false SRP. Async keeps the contract intact when the in-memory adapter is later
-  swapped for a real store.
-- **History uses `push`/`shift` capped at 15**, not a ring buffer, which would be premature
-  optimisation for 15 items.
-- **Validation is split:** `zod` checks the request shape (400), the domain enforces the business
-  invariant (422).
-- **Two runtime dependencies** (`express`, `zod`). No `helmet`, `cors`, ORM or DI container for an
-  internal API on a minimal stack; `cors` will arrive with the frontend.
+A few choices worth calling out.
+
+The state boundaries are the easy thing to get wrong: `HOT` is `temp >= hotMin`, `COLD` is
+`temp < coldMax`, and everything between is `WARM`, so 22.0 reads WARM and 35.0 reads HOT. Both
+edges have tests. Only the two boundary numbers are stored; WARM is derived. The `coldMax < hotMin`
+invariant lives in `createThresholds`, so you can't build an invalid `Thresholds`, and redefining
+the thresholds only changes future readings, never the history that was already recorded.
+
+- `Temperature` is a branded type validated once at the edge, so `NaN`/`Infinity` never reach the
+  domain.
+- The repository port is a single async interface: history and thresholds always travel together,
+  so splitting them would be false SRP, and `Promise` returns mean the in-memory store can later
+  become a real one without touching the domain. That store is a plain array capped at 15 (a ring
+  buffer would be overkill here).
+- Validation is split between `zod` at the HTTP edge (`400`) and the domain invariant (`422`).
+
+Dependencies are kept to two at runtime (`express`, `zod`): no `helmet`, `cors`, ORM or DI
+container for an internal API. `cors` joins once there is a frontend to allow.
 
 ## Testing
 
@@ -118,4 +121,3 @@ The domain has zero external imports.
 Unit tests cover the domain and use-cases; integration tests drive the real HTTP app through
 `supertest`, including the boundary values, the rolling 15-item window, the `422`/`400` split,
 and the reclassification semantics.
-

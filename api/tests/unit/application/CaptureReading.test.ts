@@ -6,7 +6,10 @@ import { FakeReadingRepository } from '../../fakes/FakeReadingRepository';
 
 describe('CaptureReading', () => {
   it('captures the current temperature and classifies it', async () => {
-    const reading = await new CaptureReading(new FakeTemperatureSensor(25), new FakeReadingRepository()).execute();
+    const reading = await new CaptureReading(
+      new FakeTemperatureSensor(25),
+      new FakeReadingRepository(),
+    ).execute();
 
     expect(reading.temperature).toBe(25);
     expect(reading.state).toBe('WARM');
@@ -51,17 +54,17 @@ describe('CaptureReading', () => {
       read: () => Promise.reject(new Error('sensor unavailable')),
     };
 
-    await expect(new CaptureReading(failing, new FakeReadingRepository()).execute()).rejects.toThrow(
-      'sensor unavailable',
-    );
+    await expect(
+      new CaptureReading(failing, new FakeReadingRepository()).execute(),
+    ).rejects.toThrow('sensor unavailable');
   });
 
   it('propagates repository write errors', async () => {
     const repository = new FakeReadingRepository();
     jest.spyOn(repository, 'append').mockRejectedValue(new Error('write failed'));
 
-    await expect(new CaptureReading(new FakeTemperatureSensor(20), repository).execute()).rejects.toThrow(
-      'write failed',
-    );
+    await expect(
+      new CaptureReading(new FakeTemperatureSensor(20), repository).execute(),
+    ).rejects.toThrow('write failed');
   });
 });

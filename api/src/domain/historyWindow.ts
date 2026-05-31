@@ -1,2 +1,2 @@
-// The API exposes the last 15 temperature requests (spec requirement 5).
+// History is capped at the last 15 readings.
 export const HISTORY_WINDOW = 15;

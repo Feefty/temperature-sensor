@@ -23,7 +23,9 @@ describe('Temperature API', () => {
     [22.0, 'WARM'],
     [35.0, 'HOT'],
   ])('classifies %p as %s over HTTP', async (celsius, state) => {
-    const res = await request(appWith(new FakeTemperatureSensor(celsius))).get('/api/v1/temperature');
+    const res = await request(appWith(new FakeTemperatureSensor(celsius))).get(
+      '/api/v1/temperature',
+    );
     expect(res.body.state).toBe(state);
   });
 
@@ -78,7 +80,9 @@ describe('Temperature API', () => {
   });
 
   it('returns 400 when the sensor yields an invalid reading', async () => {
-    const sensor: TemperatureSensor = { read: () => Promise.reject(new DomainError('invalid reading')) };
+    const sensor: TemperatureSensor = {
+      read: () => Promise.reject(new DomainError('invalid reading')),
+    };
     const res = await request(appWith(sensor)).get('/api/v1/temperature');
 
     expect(res.status).toBe(400);
