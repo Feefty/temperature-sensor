@@ -85,7 +85,7 @@ api/src/
     ports/         TemperatureSensor, ReadingRepository (driven ports)
     errors/        DomainError, ThresholdsInvariantError
   application/     use-cases: CaptureReading, GetHistory, RedefineThresholds
-  infrastructure/  adapters: InMemoryReadingRepository, StubTemperatureSensor, http/
+  infrastructure/  adapters: InMemoryReadingRepository, RandomTemperatureSensor, http/
   main.ts          composition root
 ```
 
@@ -94,28 +94,23 @@ The domain has zero external imports.
 
 ## Key design decisions
 
-- **Boundary inclusivity.** `HOT` is `temp >= hotMin`, `COLD` is `temp < coldMax`, `WARM`
-  is the rest. So `22.0` is WARM and `35.0` is HOT. This is the spec's subtlest point and
-  is verified in both unit and integration tests.
-- **`WARM` is derived.** Only `coldMax` and `hotMin` are stored; `WARM` is the band between
-  them. Redefining thresholds is therefore two numbers plus one invariant (`coldMax < hotMin`),
-  enforced in a single factory (`createThresholds`) so an invalid state cannot be constructed.
-- **Reclassification applies to the future only.** A reading is classified with the thresholds
-  active at capture time; redefining thresholds never rewrites past history. This is covered by
-  a dedicated test.
-- **`Temperature` is a branded type.** A finite-number check happens once, at the boundary, so
-  `NaN`/`Infinity` cannot reach the rest of the domain.
-- **One `ReadingRepository` port.** History and thresholds are read together, so splitting them
-  into two ports would be false SRP. The port is async because the spec asks for hexagonal and
-  "soon to production": swapping the in-memory adapter for a real datastore must not change the
-  domain.
-- **History is a bounded list.** `push` + `shift` capped at 15. For a fixed 15-item window a
-  ring buffer would be premature optimisation, so simplicity wins.
-- **Validation split.** `zod` validates request shape at the HTTP boundary (`400`); the business
-  invariant lives in the domain (`422`).
-- **Two runtime dependencies** (`express`, `zod`). `helmet`, `cors`, `rate-limit`, a DI
-  container, an ORM, and metrics were deliberately left out: this is an internal API with a
-  minimal stack. `cors` will be added when the frontend lands.
+- **Boundaries: HOT inclusive, COLD exclusive.** `temp >= hotMin` is HOT, `temp < coldMax` is
+  COLD, the rest is WARM, so 22.0 is WARM and 35.0 is HOT. Tested at the boundaries.
+- **WARM is computed, not stored.** Only `coldMax` and `hotMin` are kept; the `coldMax < hotMin`
+  invariant lives in `createThresholds`, so an invalid Thresholds cannot exist.
+- **Redefining thresholds affects future readings only.** State is fixed at capture time, history
+  is never rewritten (there is a test for that).
+- **`Temperature` is a branded type**, so the finite-number check at the boundary keeps `NaN` and
+  `Infinity` out of the domain.
+- **One async `ReadingRepository` port.** History and thresholds are always used together, so two
+  ports would be false SRP. Async keeps the contract intact when the in-memory adapter is later
+  swapped for a real store.
+- **History uses `push`/`shift` capped at 15**, not a ring buffer, which would be premature
+  optimisation for 15 items.
+- **Validation is split:** `zod` checks the request shape (400), the domain enforces the business
+  invariant (422).
+- **Two runtime dependencies** (`express`, `zod`). No `helmet`, `cors`, ORM or DI container for an
+  internal API on a minimal stack; `cors` will arrive with the frontend.
 
 ## Testing
 
