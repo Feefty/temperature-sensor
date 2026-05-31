@@ -1,7 +1,10 @@
+import { AppShell } from '@/components/AppShell';
+import { Styleguide } from '@/styleguide';
+
 export function App() {
   return (
-    <main>
-      <h1>Temperature Monitor</h1>
-    </main>
+    <AppShell title="Temperature Monitor">
+      <Styleguide />
+    </AppShell>
   );
 }

@@ -1,0 +1,48 @@
+/* Hidden until focused, then slides into view: lets keyboard users jump past the header. */
+.skipLink {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: var(--space-2xs);
+  padding: var(--space-2xs) var(--space-sm);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+  color: var(--text);
+  transform: translateY(-200%);
+  transition: transform 0.15s ease;
+  z-index: 10;
+}
+
+.skipLink:focus {
+  transform: translateY(0);
+}
+
+/* Fluid gutter that grows with the viewport, clamped so it never gets cramped or excessive. */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-md) clamp(1rem, 5vw, 2.25rem);
+}
+
+.brand {
+  margin: 0;
+  /* Stays at or above the section h2 size so the page h1 never reads as the smallest heading. */
+  font-size: var(--text-xl);
+}
+
+.main {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 5vw, 2.25rem) var(--space-xl);
+}
+
+/* The skip link moves focus here; main is a destination, not a control, so it needs no ring. */
+.main:focus {
+  outline: none;
+}
