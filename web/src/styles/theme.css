@@ -36,7 +36,8 @@
   --text-placeholder: var(--c-slate-deep);
   --accent: var(--c-green-ink-aa);
   --accent-fill: var(--c-green-ink-aa);
-  --cta-text: var(--c-ink);
+  /* White, not ink: on the darker light-theme green this is 5.5:1 (AA); ink would be 3:1. */
+  --cta-text: var(--c-white);
   --field-bg: var(--c-white);
   --field-border: var(--c-slate-deep);
   --shadow: 0 8px 24px rgba(9, 27, 59, 0.12);
