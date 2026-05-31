@@ -10,15 +10,21 @@
   --c-green-ink: #1fa637;
   --c-green-ink-aa: #157a26; /* green text on light, passes WCAG AA */
   --c-blue: #0670ba;
+  --c-blue-bright: #4da3e0; /* cold on dark, AA */
+  --c-blue-deep: #075a91; /* cold on light, AA */
   --c-red: #e5484d;
+  --c-red-bright: #ff6b6b; /* hot on dark, AA */
+  --c-red-deep: #c13a3f; /* hot on light, AA */
   --c-amber: #f5a623;
 
   --c-white: #ffffff;
   --c-grey-50: #f6f6f8;
   --c-grey-100: #efefef;
   --c-slate: #8fa0b2;
+  --c-slate-deep: #5a6b7b;
+  --c-text-dark: #e7ecf3;
 
-  --font-sans: 'Montserrat', system-ui, sans-serif;
+  --font-sans: 'Montserrat Variable', system-ui, sans-serif;
 
   --space-2xs: 0.44rem;
   --space-xs: 0.67rem;
@@ -32,5 +38,5 @@
   --radius-card: 16px;
   --radius-pill: 100px;
 
-  --shadow-card: 0 16px 48px rgba(51, 238, 135, 0.08), 0 4px 16px rgba(0, 0, 0, 0.2);
+  --blur-card: 14px;
 }

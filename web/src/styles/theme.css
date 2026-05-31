@@ -5,14 +5,24 @@
   --bg: var(--c-navy-deep);
   --surface: rgba(255, 255, 255, 0.04);
   --surface-border: rgba(51, 238, 135, 0.15);
-  --text: #e7ecf3;
+  --surface-border-hover: rgba(51, 238, 135, 0.35);
+  --text: var(--c-text-dark);
   --text-muted: var(--c-slate);
+  --text-placeholder: var(--c-slate);
   --accent: var(--c-green-bright);
   --accent-fill: var(--c-green-cta);
+  --cta-text: var(--c-ink);
+  --field-bg: rgba(255, 255, 255, 0.04);
+  --field-border: var(--c-slate);
+  --shadow: 0 16px 48px rgba(51, 238, 135, 0.08), 0 4px 16px rgba(0, 0, 0, 0.2);
 
-  --state-cold: var(--c-blue);
-  --state-warm: var(--c-green-cta);
-  --state-hot: var(--c-red);
+  /* Foreground colours, each >= 4.5:1 on the dark surfaces. */
+  --state-cold: var(--c-blue-bright);
+  --state-warm: var(--c-green-bright);
+  --state-hot: var(--c-red-bright);
+  --state-cold-tint: rgba(6, 112, 186, 0.16);
+  --state-warm-tint: rgba(37, 208, 114, 0.16);
+  --state-hot-tint: rgba(229, 72, 77, 0.16);
 }
 
 [data-theme='light'] {
@@ -20,12 +30,21 @@
   --bg: var(--c-grey-50);
   --surface: var(--c-white);
   --surface-border: var(--c-grey-100);
+  --surface-border-hover: var(--c-slate);
   --text: var(--c-navy);
-  --text-muted: #5a6b7b;
+  --text-muted: var(--c-slate-deep);
+  --text-placeholder: var(--c-slate-deep);
   --accent: var(--c-green-ink-aa);
   --accent-fill: var(--c-green-ink-aa);
+  --cta-text: var(--c-ink);
+  --field-bg: var(--c-white);
+  --field-border: var(--c-slate-deep);
+  --shadow: 0 8px 24px rgba(9, 27, 59, 0.12);
 
-  --state-cold: #075a91;
+  --state-cold: var(--c-blue-deep);
   --state-warm: var(--c-green-ink-aa);
-  --state-hot: #c13a3f;
+  --state-hot: var(--c-red-deep);
+  --state-cold-tint: rgba(7, 90, 145, 0.1);
+  --state-warm-tint: rgba(21, 122, 38, 0.1);
+  --state-hot-tint: rgba(193, 58, 63, 0.1);
 }

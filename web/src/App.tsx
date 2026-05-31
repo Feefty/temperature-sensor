@@ -1,3 +1,7 @@
 export function App() {
-  return <h1>Temperature Monitor</h1>;
+  return (
+    <main>
+      <h1>Temperature Monitor</h1>
+    </main>
+  );
 }
