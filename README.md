@@ -68,13 +68,14 @@ curl -X PUT http://localhost:3000/api/v1/thresholds \
   -d '{ "coldMax": 22, "hotMin": 35 }'
 ```
 
-| Status | When                                                          |
-| ------ | ------------------------------------------------------------- |
-| `200`  | success                                                       |
-| `400`  | malformed body (wrong type, missing field, non-finite number) |
-| `422`  | thresholds violate the `coldMax < hotMin` invariant           |
-| `404`  | unknown route                                                 |
-| `500`  | unexpected failure (e.g. the sensor is unavailable)           |
+| Status | When                                                                        |
+| ------ | --------------------------------------------------------------------------- |
+| `200`  | success                                                                     |
+| `400`  | malformed body (invalid JSON, wrong type, missing field, non-finite number) |
+| `413`  | request body larger than the 4kb limit                                      |
+| `422`  | thresholds violate the `coldMax < hotMin` invariant                         |
+| `404`  | unknown route                                                               |
+| `500`  | unexpected failure (e.g. the sensor is unavailable)                         |
 
 ## Architecture
 
@@ -111,6 +112,8 @@ the thresholds only changes future readings, never the history that was already 
   become a real one without touching the domain. That store is a plain array capped at 15 (a ring
   buffer would be overkill here).
 - Validation is split between `zod` at the HTTP edge (`400`) and the domain invariant (`422`).
+- The model assumes one sensor and one set of thresholds, as the brief describes. Supporting several
+  sensors would add a `sensorId` to the reading and the repository keys, not rework the domain.
 
 Dependencies are kept to two at runtime (`express`, `zod`): no `helmet`, `cors`, ORM or DI
 container for an internal API. `cors` joins once there is a frontend to allow.

@@ -79,6 +79,25 @@ describe('Temperature API', () => {
     expect(res.status).toBe(400);
   });
 
+  it('PUT /api/v1/thresholds rejects syntactically invalid JSON with 400', async () => {
+    const res = await request(appWith(new FakeTemperatureSensor(25)))
+      .put('/api/v1/thresholds')
+      .set('Content-Type', 'application/json')
+      .send('{ "coldMax": 22, ');
+
+    expect(res.status).toBe(400);
+  });
+
+  it('PUT /api/v1/thresholds rejects an over-limit body with 413', async () => {
+    const body = JSON.stringify({ coldMax: 22, hotMin: 35, pad: 'x'.repeat(5000) });
+    const res = await request(appWith(new FakeTemperatureSensor(25)))
+      .put('/api/v1/thresholds')
+      .set('Content-Type', 'application/json')
+      .send(body);
+
+    expect(res.status).toBe(413);
+  });
+
   it('returns 400 when the sensor yields an invalid reading', async () => {
     const sensor: TemperatureSensor = {
       read: () => Promise.reject(new DomainError('invalid reading')),
