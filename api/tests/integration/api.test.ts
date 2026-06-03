@@ -41,6 +41,20 @@ describe('Temperature API', () => {
     expect(res.body).toHaveLength(15);
   });
 
+  it('GET /api/v1/thresholds returns the defaults, then the updated values after a PUT', async () => {
+    const app = appWith(new FakeTemperatureSensor(25));
+    expect((await request(app).get('/api/v1/thresholds')).body).toEqual({
+      coldMax: 22,
+      hotMin: 35,
+    });
+
+    await request(app).put('/api/v1/thresholds').send({ coldMax: 10, hotMin: 20 });
+
+    const res = await request(app).get('/api/v1/thresholds');
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ coldMax: 10, hotMin: 20 });
+  });
+
   it('PUT /api/v1/thresholds updates thresholds and reclassifies future readings', async () => {
     const app = appWith(new FakeTemperatureSensor(25));
     expect((await request(app).get('/api/v1/temperature')).body.state).toBe('WARM');

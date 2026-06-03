@@ -3,6 +3,7 @@ import type { TemperatureSensor } from '../../domain/ports/TemperatureSensor';
 import type { ReadingRepository } from '../../domain/ports/ReadingRepository';
 import { CaptureReading } from '../../application/use-cases/CaptureReading';
 import { GetHistory } from '../../application/use-cases/GetHistory';
+import { GetThresholds } from '../../application/use-cases/GetThresholds';
 import { RedefineThresholds } from '../../application/use-cases/RedefineThresholds';
 import { TemperatureController } from './controllers/TemperatureController';
 import { ThresholdsController } from './controllers/ThresholdsController';
@@ -21,7 +22,10 @@ export function createApp({ sensor, repository }: AppDependencies): Express {
     new CaptureReading(sensor, repository),
     new GetHistory(repository),
   );
-  const thresholdsController = new ThresholdsController(new RedefineThresholds(repository));
+  const thresholdsController = new ThresholdsController(
+    new GetThresholds(repository),
+    new RedefineThresholds(repository),
+  );
 
   const app = express();
   app.disable('x-powered-by');

@@ -9,6 +9,7 @@ export function buildRouter(
   const router = Router();
   router.get('/temperature', temperature.capture);
   router.get('/temperature/history', temperature.history);
+  router.get('/thresholds', thresholds.current);
   router.put('/thresholds', thresholds.redefine);
   return router;
 }
