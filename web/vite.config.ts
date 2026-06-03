@@ -10,6 +10,10 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  // Proxy the API in dev so the app calls same-origin /api/v1 (and sidesteps CORS).
+  server: {
+    proxy: { '/api': 'http://localhost:3000' },
+  },
   test: {
     globals: true,
     environment: 'jsdom',

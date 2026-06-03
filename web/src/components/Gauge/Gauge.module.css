@@ -1,0 +1,37 @@
+.gauge {
+  display: block;
+  width: 100%;
+  max-width: 18rem;
+  height: auto;
+}
+
+.gauge path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+
+.track {
+  color: var(--surface-border);
+}
+
+.cold {
+  color: var(--state-cold);
+}
+
+.warm {
+  color: var(--state-warm);
+}
+
+.hot {
+  color: var(--state-hot);
+}
+
+/* The current-value dot: filled with the live state colour, ringed by the opaque page
+   background so it separates from the same-coloured zone arc in both themes. */
+.marker {
+  fill: currentColor;
+  stroke: var(--bg);
+  stroke-width: 3;
+}
