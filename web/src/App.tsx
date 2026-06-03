@@ -1,10 +1,10 @@
 import { AppShell } from '@/components/AppShell';
-import { LiveReading } from '@/widgets/LiveReading';
+import { Dashboard } from '@/dashboard';
 
 export function App() {
   return (
     <AppShell title="Temperature Monitor">
-      <LiveReading />
+      <Dashboard />
     </AppShell>
   );
 }

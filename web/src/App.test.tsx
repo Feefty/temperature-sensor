@@ -16,6 +16,7 @@ describe('App', () => {
           capturedAt: '2026-05-31T10:00:00.000Z',
         }),
       ),
+      http.get(`${BASE}/temperature/history`, () => HttpResponse.json([])),
     );
   });
 

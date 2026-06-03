@@ -1,0 +1,12 @@
+.grid {
+  display: grid;
+  gap: var(--space-md);
+}
+
+/* From the Harvest "lg" breakpoint, sit the live reading beside the wider history table. */
+@media (min-width: 992px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    align-items: start;
+  }
+}
