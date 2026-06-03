@@ -24,6 +24,17 @@
   --field-border: var(--c-slate);
   --shadow: 0 16px 48px rgba(51, 238, 135, 0.08), 0 4px 16px rgba(0, 0, 0, 0.2);
 
+  /* Segmented control: an inset track with the selected view lifted as a lighter pill. The lift,
+     not a colour, marks selection, so the brand green stays reserved for the CTA. */
+  --segment-track: rgba(255, 255, 255, 0.04);
+  --segment-active: rgba(255, 255, 255, 0.14);
+
+  /* Opaque match for the glass card, for the sticky table header to sit on while rows scroll under it. */
+  --surface-solid: #0f2135;
+
+  --scrollbar-thumb: rgba(255, 255, 255, 0.2);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.32);
+
   /* Foreground colours, each >= 4.5:1 on the dark surfaces. */
   --state-cold: var(--c-blue-bright);
   --state-warm: var(--c-green-bright);
@@ -31,6 +42,11 @@
   --state-cold-tint: rgba(6, 112, 186, 0.16);
   --state-warm-tint: rgba(37, 208, 114, 0.16);
   --state-hot-tint: rgba(229, 72, 77, 0.16);
+
+  /* Gauge zone strokes are graphics, not text, so they can stay vivid (>= 3:1 is enough). */
+  --gauge-cold: var(--c-blue-bright);
+  --gauge-warm: var(--c-green-bright);
+  --gauge-hot: var(--c-red-bright);
 }
 
 [data-theme='light'] {
@@ -52,10 +68,23 @@
   --field-border: var(--c-slate-deep);
   --shadow: 0 8px 24px rgba(9, 27, 59, 0.12);
 
+  --segment-track: var(--c-grey-100);
+  --segment-active: var(--c-white);
+
+  --surface-solid: var(--c-white);
+
+  --scrollbar-thumb: rgba(9, 27, 59, 0.22);
+  --scrollbar-thumb-hover: rgba(9, 27, 59, 0.36);
+
   --state-cold: var(--c-blue-deep);
   --state-warm: var(--c-green-deep);
   --state-hot: var(--c-red-deep);
   --state-cold-tint: rgba(7, 90, 145, 0.1);
   --state-warm-tint: rgba(15, 110, 31, 0.1);
   --state-hot-tint: rgba(168, 47, 52, 0.1);
+
+  /* Vivid brand colours for the gauge graphics (>= 3:1 on the light surfaces). */
+  --gauge-cold: var(--c-blue);
+  --gauge-warm: var(--c-green-ui);
+  --gauge-hot: var(--c-red);
 }

@@ -40,6 +40,7 @@ export const api = {
   getTemperature: () => request<ReadingDto>('/temperature').then(toReading),
   getHistory: () =>
     request<ReadingDto[]>('/temperature/history').then((dtos) => dtos.map(toReading)),
+  getThresholds: () => request<Thresholds>('/thresholds'),
   redefineThresholds: (input: Thresholds) =>
     request<Thresholds>('/thresholds', {
       method: 'PUT',

@@ -17,21 +17,26 @@
 }
 
 .cold {
-  color: var(--state-cold);
+  color: var(--gauge-cold);
 }
 
 .warm {
-  color: var(--state-warm);
+  color: var(--gauge-warm);
 }
 
 .hot {
-  color: var(--state-hot);
+  color: var(--gauge-hot);
 }
 
 /* The current-value dot: filled with the live state colour, ringed by the opaque page
-   background so it separates from the same-coloured zone arc in both themes. */
+   background so it separates from the same-coloured zone arc in both themes. It glides to
+   each new reading; the global reduced-motion rule shortens the transition. */
 .marker {
   fill: currentColor;
   stroke: var(--bg);
   stroke-width: 3;
+  /* Rotate around the gauge centre so the dot glides along the arc. */
+  transform-box: view-box;
+  transform-origin: 100px 100px;
+  transition: transform 0.6s ease;
 }

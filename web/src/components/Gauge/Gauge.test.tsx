@@ -14,12 +14,15 @@ describe('Gauge', () => {
     expect(container.querySelector('circle')?.getAttribute('class')).toMatch(/hot/);
   });
 
-  it('moves the marker from left to right as the value rises', () => {
+  it('rotates the marker along the arc as the value rises', () => {
     const { container, rerender } = render(<Gauge value={-10} state="COLD" />);
-    const coldX = Number(container.querySelector('circle')?.getAttribute('cx'));
+    expect(container.querySelector('circle')?.getAttribute('style')).toContain('rotate(0deg)');
+    // Mid-scale must land at 90deg (top of the arc); the endpoints alone would hide a wrong
+    // pivot, since 0deg and 180deg look right even when rotated about the wrong origin.
+    rerender(<Gauge value={20} state="WARM" />);
+    expect(container.querySelector('circle')?.getAttribute('style')).toContain('rotate(90deg)');
     rerender(<Gauge value={50} state="HOT" />);
-    const hotX = Number(container.querySelector('circle')?.getAttribute('cx'));
-    expect(coldX).toBeLessThan(hotX);
+    expect(container.querySelector('circle')?.getAttribute('style')).toContain('rotate(180deg)');
   });
 
   it('still draws three ordered zone arcs when the thresholds are crossed', () => {

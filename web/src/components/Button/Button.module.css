@@ -28,9 +28,17 @@
   gap: var(--space-2xs);
 }
 
+/* Centred over the label so the loading state never changes the button width. */
 .spinnerSlot {
-  display: inline-flex;
+  position: absolute;
+  inset: 0;
+  display: flex;
   align-items: center;
+  justify-content: center;
+}
+
+.loading {
+  opacity: 0;
 }
 
 .primary {

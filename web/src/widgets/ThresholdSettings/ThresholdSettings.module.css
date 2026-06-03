@@ -1,0 +1,41 @@
+.title {
+  margin: 0 0 var(--space-sm);
+  font-size: var(--text-md);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* Reserves one line at all times; at most one of the two messages is shown, so the card height
+   stays constant whether it reports an error, a confirmation or nothing. */
+.messages {
+  min-height: 1.4rem;
+}
+
+.error,
+.saved {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+/* Both live regions stay mounted (so updates are announced) and collapse when empty. */
+.error:empty,
+.saved:empty {
+  display: none;
+}
+
+.error {
+  color: var(--state-hot);
+}
+
+.saved {
+  color: var(--state-warm);
+}
+
+.submit {
+  align-self: flex-start;
+}

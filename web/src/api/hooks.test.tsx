@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { delay, http, HttpResponse } from 'msw';
-import { useHistory, useLiveReading, useRedefineThresholds } from '@/api';
+import { useHistory, useLiveReading, useRedefineThresholds, useThresholds } from '@/api';
 import { server } from '@/test/server';
 
 const BASE = 'http://localhost/api/v1';
@@ -48,6 +48,25 @@ describe('useLiveReading', () => {
     expect(result.current.data?.temperature).toBe(99);
   });
 
+  it('refetches once when refreshKey changes, without resetting the poll', async () => {
+    let calls = 0;
+    server.use(
+      http.get(`${BASE}/temperature`, () => {
+        calls += 1;
+        return HttpResponse.json(READING);
+      }),
+    );
+
+    const { result, rerender } = renderHook(({ key }) => useLiveReading(100000, key), {
+      initialProps: { key: 0 },
+    });
+    await waitFor(() => expect(result.current.data?.state).toBe('WARM'));
+    const afterMount = calls;
+
+    rerender({ key: 1 });
+    await waitFor(() => expect(calls).toBe(afterMount + 1));
+  });
+
   it('keeps the last good reading when a later poll fails', async () => {
     server.use(http.get(`${BASE}/temperature`, () => HttpResponse.json(READING)));
     const { result } = renderHook(() => useLiveReading(100000));
@@ -79,6 +98,27 @@ describe('useHistory', () => {
     );
 
     const { result } = renderHook(() => useHistory());
+    await waitFor(() => expect(result.current.error).toBeInstanceOf(Error));
+  });
+});
+
+describe('useThresholds', () => {
+  it('loads the current thresholds from the server', async () => {
+    server.use(
+      http.get(`${BASE}/thresholds`, () => HttpResponse.json({ coldMax: 18, hotMin: 30 })),
+    );
+
+    const { result } = renderHook(() => useThresholds());
+    expect(result.current.isLoading).toBe(true);
+
+    await waitFor(() => expect(result.current.data).toEqual({ coldMax: 18, hotMin: 30 }));
+    expect(result.current.error).toBeNull();
+  });
+
+  it('surfaces an error when the thresholds fail to load', async () => {
+    server.use(http.get(`${BASE}/thresholds`, () => new HttpResponse(null, { status: 500 })));
+
+    const { result } = renderHook(() => useThresholds());
     await waitFor(() => expect(result.current.error).toBeInstanceOf(Error));
   });
 });

@@ -1,4 +1,7 @@
 import { useLiveReading } from '@/api';
+import { DEFAULT_THRESHOLDS } from '@/domain';
+import { formatTime } from '@/format';
+import type { Thresholds } from '@/types';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Gauge } from '@/components/Gauge';
@@ -9,10 +12,16 @@ import styles from './LiveReading.module.css';
 
 export interface LiveReadingProps {
   pollMs?: number;
+  thresholds?: Thresholds;
+  refreshKey?: number;
 }
 
-export function LiveReading({ pollMs = 5000 }: LiveReadingProps) {
-  const { data, error, isLoading, refetch } = useLiveReading(pollMs);
+export function LiveReading({
+  pollMs = 5000,
+  thresholds = DEFAULT_THRESHOLDS,
+  refreshKey = 0,
+}: LiveReadingProps) {
+  const { data, error, isLoading, refetch } = useLiveReading(pollMs, refreshKey);
 
   return (
     <Card role="region" aria-labelledby="rack-sensor-title">
@@ -22,17 +31,22 @@ export function LiveReading({ pollMs = 5000 }: LiveReadingProps) {
 
       {data ? (
         <div className={styles.reading}>
-          <Gauge value={data.temperature} state={data.state} />
+          <Gauge
+            value={data.temperature}
+            state={data.state}
+            coldMax={thresholds.coldMax}
+            hotMin={thresholds.hotMin}
+          />
           <p className={styles.value}>
             {data.temperature.toFixed(1)}
             <span className={styles.unit}>°C</span>
           </p>
           <StatusBadge state={data.state} />
-          {data.state === 'HOT' ? (
-            <p role="alert" className={styles.alert}>
-              {COPY.overheating}
-            </p>
-          ) : null}
+          {/* Kept mounted with reserved height: HOT toggles its text rather than inserting a node,
+              so the layout never shifts and the change is announced on a COLD/WARM -> HOT transition. */}
+          <p role="alert" className={styles.alert}>
+            {data.state === 'HOT' ? COPY.overheating : ''}
+          </p>
           {/* On a failed poll the hook keeps the last reading; tell the user it is no longer live. */}
           <p className={styles.meta}>
             {error ? (
@@ -40,9 +54,7 @@ export function LiveReading({ pollMs = 5000 }: LiveReadingProps) {
             ) : (
               <>
                 {COPY.updated}{' '}
-                <time dateTime={data.capturedAt.toISOString()}>
-                  {data.capturedAt.toLocaleTimeString()}
-                </time>
+                <time dateTime={data.capturedAt.toISOString()}>{formatTime(data.capturedAt)}</time>
               </>
             )}
           </p>

@@ -30,13 +30,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       disabled={disabled || isLoading}
       aria-busy={isLoading || undefined}
     >
-      <span className={styles.label}>
-        {/* Decorative while loading: aria-busy carries the state, so the spinner stays out of the name. */}
-        {isLoading ? (
-          <span className={styles.spinnerSlot} aria-hidden="true">
-            <Spinner size="sm" />
-          </span>
-        ) : null}
+      {/* Spinner overlays the label (which stays at opacity 0) so the button keeps its width and
+          does not flicker while loading; aria-busy carries the state and the spinner is hidden. */}
+      {isLoading ? (
+        <span className={styles.spinnerSlot} aria-hidden="true">
+          <Spinner size="sm" />
+        </span>
+      ) : null}
+      <span className={[styles.label, isLoading ? styles.loading : ''].filter(Boolean).join(' ')}>
         {children}
       </span>
     </button>

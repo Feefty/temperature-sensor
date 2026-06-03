@@ -17,6 +17,7 @@ describe('App', () => {
         }),
       ),
       http.get(`${BASE}/temperature/history`, () => HttpResponse.json([])),
+      http.get(`${BASE}/thresholds`, () => HttpResponse.json({ coldMax: 22, hotMin: 35 })),
     );
   });
 

@@ -5,10 +5,12 @@
 
   --c-green-bright: #33ee87; /* on dark surfaces only */
   --c-green-cta: #25d072;
-  --c-green-ui: #199030; /* UI accent (focus, controls) on light: brand-green, >=3:1 non-text */
+  --c-green-ui: #139656; /* UI accent (focus, controls, gauge) on light: brand emerald hue, >=3:1 */
   --c-green-deep: #0f6e1f; /* warm badge text on light, AA over the tint */
+  --c-blue: #0670ba; /* cold gauge zone on light (non-text, >=3:1) */
   --c-blue-bright: #4da3e0; /* cold on dark, AA */
   --c-blue-deep: #075a91; /* cold on light, AA over the tint */
+  --c-red: #e5484d; /* hot gauge zone on light (non-text, >=3:1) */
   --c-red-bright: #ff6b6b; /* hot on dark, AA */
   --c-red-deep: #a82f34; /* hot badge text on light, AA over the tint */
 

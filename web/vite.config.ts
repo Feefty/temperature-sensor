@@ -20,6 +20,8 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     css: true,
     passWithNoTests: true,
+    // jest-axe runs are CPU-heavy in jsdom; give them headroom over the 5s default under CI load.
+    testTimeout: 15000,
     // Node's fetch needs an absolute base; the app itself defaults to the same-origin /api/v1.
     env: { VITE_API_URL: 'http://localhost/api/v1' },
     coverage: {

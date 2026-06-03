@@ -1,12 +1,39 @@
+/* Wide layout: live reading over the form on the left, the taller history filling the right. */
 .grid {
   display: grid;
   gap: var(--space-md);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  grid-template-areas:
+    'monitor history'
+    'settings history';
 }
 
-/* From the Harvest "lg" breakpoint, sit the live reading beside the wider history table. */
-@media (min-width: 992px) {
-  .grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
-    align-items: start;
-  }
+.monitor {
+  grid-area: monitor;
+}
+
+.settings {
+  grid-area: settings;
+}
+
+.history {
+  grid-area: history;
+}
+
+/* Stretch each cell and let its card fill it, so the left column matches the history height.
+   Scoped to the grid so it does not fight the `hidden` panels in the stacked layout. */
+.grid > * {
+  display: flex;
+}
+
+.grid > * > * {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Narrow layout: one view at a time under the segmented control. */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
 }

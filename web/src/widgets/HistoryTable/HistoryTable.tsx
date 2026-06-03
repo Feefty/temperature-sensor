@@ -1,4 +1,6 @@
 import { useHistory } from '@/api';
+import { formatTime } from '@/format';
+import { useDelayedFlag } from '@/hooks';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Spinner } from '@/components/Spinner';
@@ -6,8 +8,13 @@ import { StatusBadge } from '@/components/StatusBadge';
 import { COPY } from './scheme';
 import styles from './HistoryTable.module.css';
 
-export function HistoryTable() {
-  const { data, error, isLoading, reload } = useHistory();
+export interface HistoryTableProps {
+  refreshKey?: number;
+}
+
+export function HistoryTable({ refreshKey = 0 }: HistoryTableProps) {
+  const { data, error, isLoading, reload } = useHistory(refreshKey);
+  const refreshing = useDelayedFlag(isLoading);
 
   return (
     <Card role="region" aria-labelledby="history-title">
@@ -15,7 +22,7 @@ export function HistoryTable() {
         <h2 id="history-title" className={styles.title}>
           {COPY.title}
         </h2>
-        <Button variant="secondary" isLoading={isLoading} onClick={() => void reload()}>
+        <Button variant="secondary" isLoading={refreshing} onClick={() => void reload()}>
           {COPY.refresh}
         </Button>
       </div>
@@ -30,31 +37,35 @@ export function HistoryTable() {
           {data.length === 0 ? (
             <p className={styles.empty}>{COPY.empty}</p>
           ) : (
-            <table className={styles.table}>
-              <caption className={styles.caption}>{COPY.caption}</caption>
-              <thead>
-                <tr>
-                  <th scope="col">{COPY.time}</th>
-                  <th scope="col">{COPY.temperature}</th>
-                  <th scope="col">{COPY.state}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((reading, index) => (
-                  <tr key={`${reading.capturedAt.toISOString()}-${index}`}>
-                    <td>
-                      <time dateTime={reading.capturedAt.toISOString()}>
-                        {reading.capturedAt.toLocaleTimeString()}
-                      </time>
-                    </td>
-                    <td className={styles.temp}>{reading.temperature.toFixed(1)}°C</td>
-                    <td>
-                      <StatusBadge state={reading.state} />
-                    </td>
+            // A labelled, focusable scroll region so the overflow is reachable by keyboard (WCAG 2.1.1).
+            // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+            <div className={styles.scroll} tabIndex={0} role="group" aria-label={COPY.caption}>
+              <table className={styles.table}>
+                <caption className={styles.caption}>{COPY.caption}</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">{COPY.time}</th>
+                    <th scope="col">{COPY.temperature}</th>
+                    <th scope="col">{COPY.state}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {data.map((reading, index) => (
+                    <tr key={`${reading.capturedAt.toISOString()}-${index}`}>
+                      <td>
+                        <time dateTime={reading.capturedAt.toISOString()}>
+                          {formatTime(reading.capturedAt)}
+                        </time>
+                      </td>
+                      <td className={styles.temp}>{reading.temperature.toFixed(1)}°C</td>
+                      <td>
+                        <StatusBadge state={reading.state} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </>
       ) : isLoading ? (

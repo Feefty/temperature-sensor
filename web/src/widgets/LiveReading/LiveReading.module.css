@@ -26,6 +26,9 @@
 
 .alert {
   margin: 0;
+  /* Reserve exactly one line so toggling the overheating text never shifts the layout. */
+  min-height: 1.5em;
+  line-height: 1.5;
   font-weight: 600;
   color: var(--state-hot);
 }
