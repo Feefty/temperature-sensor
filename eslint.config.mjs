@@ -54,5 +54,11 @@ export default tseslint.config(
   // vite.config.ts is a Node build-tool file, not browser source.
   { files: ['web/vite.config.ts'], languageOptions: { globals: { ...globals.node } } },
 
+  // Node ESM scripts (e.g. the smoke test).
+  {
+    files: ['scripts/**/*.mjs'],
+    languageOptions: { sourceType: 'module', globals: { ...globals.node } },
+  },
+
   prettier,
 );

@@ -3,9 +3,23 @@ services:
     build:
       context: .
       dockerfile: api/Dockerfile
+    # Published so the API can be reached directly; the web container reaches it in-network as `api`.
     ports:
       - '3000:3000'
     environment:
       PORT: 3000
       NODE_ENV: production
+    # Health comes from the image's HEALTHCHECK (api/Dockerfile); `web` waits on it below.
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    ports:
+      - '8080:8080'
+    # nginx proxies /api to the api service, so wait until it is healthy.
+    depends_on:
+      api:
+        condition: service_healthy
     restart: unless-stopped

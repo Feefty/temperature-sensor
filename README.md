@@ -35,19 +35,27 @@ For this project, we need an API that:
 
 # Solution
 
-A TypeScript REST API built with a hexagonal (ports and adapters) architecture, in an
-npm-workspaces monorepo so a frontend can be added later without touching the API.
+A full-stack TypeScript app in an npm-workspaces monorepo: a hexagonal (ports and adapters)
+REST API (`api/`) and a React dashboard (`web/`) that consumes it. They are independent
+workspaces; the dashboard talks to the API over same-origin `/api/v1` (proxied by Vite in dev,
+by nginx in production), so there is no CORS to configure.
 
 ## Quick start
 
 ```bash
-npm install          # installs the api workspace
-npm test             # run the test suite
-npm run test:coverage
-npm run dev          # start the API on http://localhost:3000 (ts-node)
+npm install            # installs both workspaces
+npm test               # api + web suites
+npm run typecheck
+npm run lint
 
-# or with Docker
-docker compose up --build
+# Run the whole stack (dashboard on :8080, api on :3000) and smoke-test it
+docker compose up --build -d
+npm run smoke
+docker compose down
+
+# Or run a workspace in dev
+npm run dev                                       # api on http://localhost:3000 (ts-node)
+npm run dev --workspace=@temperature-sensor/web   # dashboard on http://localhost:5173
 ```
 
 ## API
@@ -61,6 +69,10 @@ curl http://localhost:3000/api/v1/temperature
 
 # Last 15 readings, newest first
 curl http://localhost:3000/api/v1/temperature/history
+
+# Read the current thresholds
+curl http://localhost:3000/api/v1/thresholds
+# -> { "coldMax": 22, "hotMin": 35 }
 
 # Redefine the thresholds (coldMax exclusive, hotMin inclusive)
 curl -X PUT http://localhost:3000/api/v1/thresholds \
@@ -77,6 +89,24 @@ curl -X PUT http://localhost:3000/api/v1/thresholds \
 | `404`  | unknown route                                                               |
 | `500`  | unexpected failure (e.g. the sensor is unavailable)                         |
 
+## Frontend
+
+`web/` is a React 18 + TypeScript dashboard (Vite, CSS Modules) that shows the live reading on a
+gauge, lists the recent history, and edits the cooling thresholds. nginx serves it as static
+files and reverse-proxies `/api/v1` to the API, so the browser only ever talks to its own origin.
+
+- The gauge zones come from the API's current thresholds (`GET /thresholds`), so the dial reflects
+  the server rather than a client-side guess.
+- The layout adapts by breakpoint, not just by restyling: the wide side-by-side grid collapses to a
+  tabbed (segmented) view on narrow screens, rendered from one tree so resizing never remounts a
+  widget or restarts polling.
+- Accessibility: WAI-ARIA tabs with keyboard support, live regions for the overheating alert and
+  failed refreshes, and a `jest-axe` check on every widget; both themes meet WCAG contrast.
+
+Tests are `vitest` + Testing Library + `jest-axe` with MSW mocking the API, under the same coverage
+gate as the API. `npm run smoke` (`scripts/smoke.mjs`) is an end-to-end check against the running
+stack: it hits the web origin, so it covers the static serving and the API proxy together.
+
 ## Architecture
 
 ```
@@ -87,13 +117,23 @@ api/src/
     services/      resolveState (boundary classification)
     ports/         TemperatureSensor, ReadingRepository (driven ports)
     errors/        DomainError, ThresholdsInvariantError
-  application/     use-cases: CaptureReading, GetHistory, RedefineThresholds
-  infrastructure/  adapters: InMemoryReadingRepository, RandomTemperatureSensor, http/
+  application/     use-cases: CaptureReading, GetHistory, GetThresholds, RedefineThresholds
+  infrastructure/
+    repositories/  InMemoryReadingRepository
+    sensor/        RandomTemperatureSensor
+    http/          controllers, routes, middleware, schemas
   main.ts          composition root
+
+web/src/
+  api/             typed client + data hooks (useLiveReading, useHistory, useThresholds, ...)
+  components/      brand library (Button, Gauge, Segmented, StatusBadge, Card, ...)
+  widgets/         LiveReading, HistoryTable, ThresholdSettings
+  dashboard/       composes the widgets into the responsive layout
 ```
 
 Dependency rule: `http -> application -> domain`; adapters implement `domain/ports`.
-The domain has zero external imports.
+The domain has zero external imports. On the web side, widgets compose components and call the
+API only through the `api/` client, so the data layer stays in one place.
 
 ## Key design decisions
 
@@ -116,7 +156,8 @@ the thresholds only changes future readings, never the history that was already 
   sensors would add a `sensorId` to the reading and the repository keys, not rework the domain.
 
 Dependencies are kept to two at runtime (`express`, `zod`): no `helmet`, `cors`, ORM or DI
-container for an internal API. `cors` joins once there is a frontend to allow.
+container for an internal API. The dashboard is served same-origin (nginx proxies `/api`), so even
+with a frontend there is still no CORS to configure.
 
 ## Testing
 
