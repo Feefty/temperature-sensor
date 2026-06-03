@@ -16,6 +16,8 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     css: true,
     passWithNoTests: true,
+    // Node's fetch needs an absolute base; the app itself defaults to the same-origin /api/v1.
+    env: { VITE_API_URL: 'http://localhost/api/v1' },
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],
