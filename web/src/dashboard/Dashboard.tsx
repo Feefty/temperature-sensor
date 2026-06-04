@@ -1,5 +1,6 @@
 import { useId, useState } from 'react';
 import { useThresholds } from '@/api';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Segmented } from '@/components/Segmented';
 import { DEFAULT_THRESHOLDS } from '@/domain';
 import { useMediaQuery } from '@/hooks';
@@ -36,7 +37,11 @@ export function Dashboard() {
       node: <LiveReading thresholds={thresholds} refreshKey={refreshKey} />,
     },
     { id: 'history', label: 'History', node: <HistoryTable refreshKey={refreshKey} /> },
-    { id: 'settings', label: 'Settings', node: <ThresholdSettings onSaved={handleSaved} /> },
+    {
+      id: 'settings',
+      label: 'Settings',
+      node: <ThresholdSettings current={thresholds} onSaved={handleSaved} />,
+    },
   ];
 
   // Narrow screens get tabs (one focused view); wide screens show every region at once. Either
@@ -65,7 +70,17 @@ export function Dashboard() {
       )}
       {views.map((view) => (
         <div key={view.id} className={styles[view.id]} {...panelProps(view.id)}>
-          {view.node}
+          {/* One boundary per panel, so a crash in a single widget shows a local fallback and
+              leaves the other two working. */}
+          <ErrorBoundary
+            fallback={
+              <p role="alert" className={styles.panelError}>
+                This section failed to load. Please reload the page.
+              </p>
+            }
+          >
+            {view.node}
+          </ErrorBoundary>
         </div>
       ))}
     </div>

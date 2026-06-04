@@ -23,6 +23,9 @@ export function useLiveReading(intervalMs = 5000, refreshKey = 0) {
 
   const refetch = useCallback(async () => {
     const ticket = (latest.current += 1);
+    // Show loading while recovering from an error or the initial empty state (e.g. a manual retry),
+    // but never flash it on a healthy background poll.
+    setState((prev) => (prev.data && !prev.error ? prev : { ...prev, isLoading: true }));
     try {
       const reading = await api.getTemperature();
       if (ticket === latest.current) setState({ data: reading, error: null, isLoading: false });

@@ -49,8 +49,10 @@
    the page. The header stays pinned via the sticky th below. */
 @media (max-width: 991.98px) {
   .scroll {
-    max-height: calc(100vh - 24rem);
-    max-height: calc(100dvh - 24rem);
+    /* Floor at 16rem so a short or zoomed viewport (where the chrome alone exceeds the height)
+       cannot collapse the table to zero. */
+    max-height: max(16rem, calc(100vh - 24rem));
+    max-height: max(16rem, calc(100dvh - 24rem));
   }
 }
 

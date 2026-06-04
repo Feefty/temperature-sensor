@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { axe } from 'jest-axe';
 import { LiveReading } from '@/widgets/LiveReading';
@@ -54,7 +54,8 @@ describe('LiveReading', () => {
 
     render(<LiveReading pollMs={20} />);
     expect(await screen.findByText('24.3')).toBeInTheDocument();
-    expect(await screen.findByText(/reconnecting/i)).toBeInTheDocument();
+    // Announced once via the status live region (the visible meta is aria-hidden while reconnecting).
+    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent(/reconnecting/i));
     expect(screen.getByText('24.3')).toBeInTheDocument();
   });
 

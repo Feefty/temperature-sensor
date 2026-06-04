@@ -47,8 +47,10 @@ export function LiveReading({
           <p role="alert" className={styles.alert}>
             {data.state === 'HOT' ? COPY.overheating : ''}
           </p>
-          {/* On a failed poll the hook keeps the last reading; tell the user it is no longer live. */}
-          <p className={styles.meta}>
+          {/* On a failed poll the hook keeps the last reading; tell the user it is no longer live.
+              Hidden from assistive tech while reconnecting, since the status region below announces
+              it (otherwise the same text is both read here and announced there). */}
+          <p className={styles.meta} aria-hidden={error ? true : undefined}>
             {error ? (
               COPY.reconnecting
             ) : (
@@ -57,6 +59,11 @@ export function LiveReading({
                 <time dateTime={data.capturedAt.toISOString()}>{formatTime(data.capturedAt)}</time>
               </>
             )}
+          </p>
+          {/* Announce the stale/reconnecting state to assistive tech. The visible meta above is
+              not a live region, so the per-poll "Updated" tick never spams the screen reader. */}
+          <p role="status" className={styles.srOnly}>
+            {error ? COPY.reconnecting : ''}
           </p>
         </div>
       ) : isLoading ? (

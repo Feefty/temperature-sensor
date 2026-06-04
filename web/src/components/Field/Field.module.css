@@ -22,6 +22,11 @@
   color: var(--text-placeholder);
 }
 
+/* An invalid field must look invalid, not only carry aria-invalid for screen readers. */
+.input[aria-invalid='true'] {
+  border-color: var(--state-hot);
+}
+
 /* Drop the native number spinners; they look out of place and typing is enough here. */
 .input[type='number'] {
   appearance: textfield;

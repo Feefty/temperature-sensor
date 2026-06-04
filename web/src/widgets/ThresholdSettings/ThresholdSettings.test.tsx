@@ -47,6 +47,24 @@ describe('ThresholdSettings', () => {
     expect(screen.getByRole('button', { name: 'Apply thresholds' })).toBeDisabled();
   });
 
+  it('flags only the offending field, not its sound sibling', () => {
+    render(<ThresholdSettings />);
+    // Hot out of range while cold stays valid and below it: only Hot is invalid.
+    fireEvent.change(screen.getByLabelText(/hot from/i), { target: { value: '99' } });
+
+    expect(screen.getByLabelText(/hot from/i)).toHaveAttribute('aria-invalid', 'true');
+    expect(screen.getByLabelText(/cold below/i)).not.toHaveAttribute('aria-invalid');
+  });
+
+  it('reflects the current thresholds and follows them when they change', () => {
+    const { rerender } = render(<ThresholdSettings current={{ coldMax: 22, hotMin: 35 }} />);
+    expect(screen.getByLabelText(/cold below/i)).toHaveValue(22);
+
+    rerender(<ThresholdSettings current={{ coldMax: 5, hotMin: 40 }} />);
+    expect(screen.getByLabelText(/cold below/i)).toHaveValue(5);
+    expect(screen.getByLabelText(/hot from/i)).toHaveValue(40);
+  });
+
   it('clears the saved confirmation once an input changes', async () => {
     server.use(
       http.put(`${BASE}/thresholds`, async ({ request }) =>

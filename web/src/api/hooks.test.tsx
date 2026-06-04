@@ -159,3 +159,39 @@ describe('useRedefineThresholds', () => {
     await waitFor(() => expect(result.current.error).toBeInstanceOf(Error));
   });
 });
+
+describe('API boundary validation', () => {
+  it('errors on a malformed reading rather than letting it reach the UI', async () => {
+    server.use(
+      http.get(`${BASE}/temperature`, () =>
+        HttpResponse.json({ temperature: 'x', state: 'WARM', capturedAt: READING.capturedAt }),
+      ),
+    );
+    const { result } = renderHook(() => useLiveReading(100000));
+    await waitFor(() => expect(result.current.error).toBeInstanceOf(Error));
+  });
+
+  it('errors on an unparseable timestamp', async () => {
+    server.use(
+      http.get(`${BASE}/temperature`, () =>
+        HttpResponse.json({ temperature: 24.3, state: 'WARM', capturedAt: 'not-a-date' }),
+      ),
+    );
+    const { result } = renderHook(() => useLiveReading(100000));
+    await waitFor(() => expect(result.current.error).toBeInstanceOf(Error));
+  });
+
+  it('errors when the history is not an array', async () => {
+    server.use(http.get(`${BASE}/temperature/history`, () => HttpResponse.json({ not: 'array' })));
+    const { result } = renderHook(() => useHistory());
+    await waitFor(() => expect(result.current.error).toBeInstanceOf(Error));
+  });
+
+  it('errors on malformed thresholds', async () => {
+    server.use(
+      http.get(`${BASE}/thresholds`, () => HttpResponse.json({ coldMax: 'x', hotMin: 30 })),
+    );
+    const { result } = renderHook(() => useThresholds());
+    await waitFor(() => expect(result.current.error).toBeInstanceOf(Error));
+  });
+});
