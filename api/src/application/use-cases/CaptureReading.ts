@@ -17,6 +17,7 @@ export class CaptureReading {
       temperature,
       state: resolveState(temperature, thresholds),
       capturedAt: new Date(),
+      thresholds,
     };
     await this.repository.append(reading);
     return reading;

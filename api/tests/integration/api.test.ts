@@ -66,6 +66,38 @@ describe('Temperature API', () => {
     expect((await request(app).get('/api/v1/temperature')).body.state).toBe('HOT');
   });
 
+  it('leaves already-recorded history unchanged when thresholds are redefined', async () => {
+    const app = appWith(new FakeTemperatureSensor(25));
+    expect((await request(app).get('/api/v1/temperature')).body.state).toBe('WARM');
+
+    await request(app).put('/api/v1/thresholds').send({ coldMax: 10, hotMin: 20 });
+
+    // The reading was classified WARM at capture time; redefining must not reclassify the past.
+    // The snapshotted thresholds prove it: the old row still carries the defaults.
+    const history = await request(app).get('/api/v1/temperature/history');
+    expect(history.body[0]).toMatchObject({
+      temperature: 25,
+      state: 'WARM',
+      thresholds: { coldMax: 22, hotMin: 35 },
+    });
+  });
+
+  it('PUT /api/v1/thresholds rejects a bound outside the sensor range with 422', async () => {
+    const res = await request(appWith(new FakeTemperatureSensor(25)))
+      .put('/api/v1/thresholds')
+      .send({ coldMax: -1000, hotMin: 1000 });
+
+    expect(res.status).toBe(422);
+  });
+
+  it('PUT /api/v1/thresholds rejects an unknown field with 400', async () => {
+    const res = await request(appWith(new FakeTemperatureSensor(25)))
+      .put('/api/v1/thresholds')
+      .send({ coldMax: 10, hotMin: 20, isAdmin: true });
+
+    expect(res.status).toBe(400);
+  });
+
   it('PUT /api/v1/thresholds rejects cold >= hot with 422', async () => {
     const res = await request(appWith(new FakeTemperatureSensor(25)))
       .put('/api/v1/thresholds')

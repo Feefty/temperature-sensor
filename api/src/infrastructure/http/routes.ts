@@ -7,6 +7,8 @@ export function buildRouter(
   thresholds: ThresholdsController,
 ): Router {
   const router = Router();
+  // GET captures the reading it returns: each read is a "temperature request" the brief counts in
+  // history. Kept as GET to match that wording (see the design note in the README).
   router.get('/temperature', temperature.capture);
   router.get('/temperature/history', temperature.history);
   router.get('/thresholds', thresholds.current);

@@ -11,6 +11,8 @@ export class TemperatureController {
 
   capture = async (_req: Request, res: Response): Promise<void> => {
     const reading = await this.captureReading.execute();
+    // This GET records the reading it returns, so it must never be cached or replayed by a proxy.
+    res.set('Cache-Control', 'no-store');
     res.json(toReadingDto(reading));
   };
 

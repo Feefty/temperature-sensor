@@ -4,7 +4,12 @@ import { createThresholds, DEFAULT_THRESHOLDS } from '../../../src/domain/value-
 import type { TemperatureReading } from '../../../src/domain/entities/TemperatureReading';
 
 function reading(celsius: number): TemperatureReading {
-  return { temperature: createTemperature(celsius), state: 'WARM', capturedAt: new Date() };
+  return {
+    temperature: createTemperature(celsius),
+    state: 'WARM',
+    capturedAt: new Date(),
+    thresholds: DEFAULT_THRESHOLDS,
+  };
 }
 
 describe('InMemoryReadingRepository', () => {

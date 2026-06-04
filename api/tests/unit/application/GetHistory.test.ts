@@ -1,10 +1,16 @@
 import { GetHistory } from '../../../src/application/use-cases/GetHistory';
 import { createTemperature } from '../../../src/domain/value-objects/Temperature';
+import { DEFAULT_THRESHOLDS } from '../../../src/domain/value-objects/Thresholds';
 import type { TemperatureReading } from '../../../src/domain/entities/TemperatureReading';
 import { FakeReadingRepository } from '../../fakes/FakeReadingRepository';
 
 function reading(celsius: number, state: TemperatureReading['state']): TemperatureReading {
-  return { temperature: createTemperature(celsius), state, capturedAt: new Date() };
+  return {
+    temperature: createTemperature(celsius),
+    state,
+    capturedAt: new Date(),
+    thresholds: DEFAULT_THRESHOLDS,
+  };
 }
 
 describe('GetHistory', () => {

@@ -26,6 +26,11 @@ describe('createThresholds', () => {
     expect(() => createThresholds(22, value)).toThrow(ThresholdsInvariantError);
   });
 
+  it.each([-11, 51, -100, 60])('rejects a bound outside the sensor range %p', (value) => {
+    expect(() => createThresholds(value, 35)).toThrow(ThresholdsInvariantError);
+    expect(() => createThresholds(22, value)).toThrow(ThresholdsInvariantError);
+  });
+
   it('throws a ThresholdsInvariantError that is also a DomainError', () => {
     expect(new ThresholdsInvariantError('boom')).toBeInstanceOf(DomainError);
   });

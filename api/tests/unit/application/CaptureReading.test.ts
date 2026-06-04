@@ -1,5 +1,6 @@
 import { CaptureReading } from '../../../src/application/use-cases/CaptureReading';
 import { RedefineThresholds } from '../../../src/application/use-cases/RedefineThresholds';
+import { DEFAULT_THRESHOLDS } from '../../../src/domain/value-objects/Thresholds';
 import type { TemperatureSensor } from '../../../src/domain/ports/TemperatureSensor';
 import { FakeTemperatureSensor } from '../../fakes/FakeTemperatureSensor';
 import { FakeReadingRepository } from '../../fakes/FakeReadingRepository';
@@ -45,8 +46,14 @@ describe('CaptureReading', () => {
     await new RedefineThresholds(repository).execute({ coldMax: 10, hotMin: 20 });
     await capture.execute(); // 25 >= 20 -> HOT
 
-    const states = (await repository.latest(15)).map((reading) => reading.state);
-    expect(states).toEqual(['HOT', 'WARM', 'WARM']);
+    const readings = await repository.latest(15);
+    expect(readings.map((reading) => reading.state)).toEqual(['HOT', 'WARM', 'WARM']);
+    // Each reading snapshots the thresholds it was classified against, newest first.
+    expect(readings.map((reading) => reading.thresholds)).toEqual([
+      { coldMax: 10, hotMin: 20 },
+      DEFAULT_THRESHOLDS,
+      DEFAULT_THRESHOLDS,
+    ]);
   });
 
   it('propagates sensor errors', async () => {
