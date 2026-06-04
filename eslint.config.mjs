@@ -34,6 +34,50 @@ export default tseslint.config(
     languageOptions: { globals: { ...globals.node } },
   },
 
+  // Enforce the hexagon at build time: keep the web framework, validation libraries, Node built-ins
+  // and the outer layers out of the domain (and adapters out of the application). This is a
+  // denylist of the realistic leaks, not a full purity prover.
+  {
+    files: ['api/src/domain/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            { name: 'express', message: 'The domain must not depend on the web framework.' },
+            { name: 'zod', message: 'The domain must not depend on validation libraries.' },
+          ],
+          patterns: [
+            {
+              group: ['node:*', '**/application/**', '**/infrastructure/**'],
+              message: 'The domain must not import Node built-ins or the outer layers.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['api/src/application/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            { name: 'express', message: 'Use-cases must not depend on the web framework.' },
+            { name: 'zod', message: 'Use-cases must not depend on validation libraries.' },
+          ],
+          patterns: [
+            {
+              group: ['**/infrastructure/**'],
+              message: 'Use-cases depend on ports, not on adapters.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+
   // Frontend: React + browser
   {
     files: ['web/**/*.{ts,tsx}'],

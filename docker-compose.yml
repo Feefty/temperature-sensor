@@ -3,9 +3,10 @@ services:
     build:
       context: .
       dockerfile: api/Dockerfile
-    # Published so the API can be reached directly; the web container reaches it in-network as `api`.
-    ports:
-      - '3000:3000'
+    # Not published to the host: the browser only ever reaches the API through nginx (same-origin),
+    # so it cannot bypass the proxy's hardening. `web` reaches it in-network as `api`.
+    expose:
+      - '3000'
     environment:
       PORT: 3000
       NODE_ENV: production

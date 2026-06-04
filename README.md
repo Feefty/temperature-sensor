@@ -48,7 +48,7 @@ npm test               # api + web suites
 npm run typecheck
 npm run lint
 
-# Run the whole stack (dashboard on :8080, api on :3000) and smoke-test it
+# Run the whole stack (dashboard on :8080; the API stays internal, reached through nginx) and smoke it
 docker compose up --build -d
 npm run smoke
 docker compose down
@@ -60,12 +60,13 @@ npm run dev --workspace=@temperature-sensor/web   # dashboard on http://localhos
 
 ## API
 
-Base path: `/api/v1`.
+Base path: `/api/v1`. Examples use the dev server on `:3000`; under docker compose the same routes
+are same-origin behind the dashboard at `http://localhost:8080/api/v1`.
 
 ```bash
 # Read the current temperature and its state (also records it in the history)
 curl http://localhost:3000/api/v1/temperature
-# -> { "temperature": 24.3, "state": "WARM", "capturedAt": "2026-05-30T10:00:00.000Z" }
+# -> { "temperature": 24.3, "state": "WARM", "capturedAt": "2026-05-30T10:00:00.000Z", "thresholds": { "coldMax": 22, "hotMin": 35 } }
 
 # Last 15 readings, newest first
 curl http://localhost:3000/api/v1/temperature/history
@@ -152,6 +153,8 @@ the thresholds only changes future readings, never the history that was already 
   become a real one without touching the domain. That store is a plain array capped at 15 (a ring
   buffer would be overkill here).
 - Validation is split between `zod` at the HTTP edge (`400`) and the domain invariant (`422`).
+- `GET /temperature` records the reading it returns. The brief counts history in "temperature
+  requests", so each read is the recorded request; a stricter REST split would `POST` the capture.
 - The model assumes one sensor and one set of thresholds, as the brief describes. Supporting several
   sensors would add a `sensorId` to the reading and the repository keys, not rework the domain.
 

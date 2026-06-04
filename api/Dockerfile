@@ -17,7 +17,8 @@ RUN npm ci --omit=dev && npm cache clean --force
 COPY --from=build /repo/api/dist ./api/dist
 USER node
 EXPOSE 3000
-# Health probe hits the read-only history endpoint, so it never records a stub reading.
+# Probe the read-only history endpoint (never records a stub reading) over IPv4 explicitly, so
+# the check does not depend on how localhost resolves inside the container.
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
-  CMD node -e "fetch('http://localhost:3000/api/v1/temperature/history').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+  CMD node -e "fetch('http://127.0.0.1:3000/api/v1/temperature/history').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
 CMD ["node", "api/dist/main.js"]

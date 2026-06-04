@@ -15,5 +15,7 @@ FROM nginxinc/nginx-unprivileged:1.27-alpine AS runtime
 COPY web/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /repo/web/dist /usr/share/nginx/html
 EXPOSE 8080
+# Probe 127.0.0.1, not localhost: localhost resolves to ::1 in the container but nginx listens on
+# IPv4 (0.0.0.0:8080), so the IPv6 attempt is refused and the container reads as unhealthy.
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
-  CMD wget -qO- http://localhost:8080/ >/dev/null 2>&1 || exit 1
+  CMD wget -qO- http://127.0.0.1:8080/ >/dev/null 2>&1 || exit 1
