@@ -1,8 +1,9 @@
 import express, { Express } from 'express';
 import { errorHandler } from './errorHandler';
 import { temperatureRoutes, TemperatureRoutesDependencies } from './temperatureRoutes';
+import { thresholdsRoutes, ThresholdsRoutesDependencies } from './thresholdsRoutes';
 
-export type AppDependencies = TemperatureRoutesDependencies;
+export type AppDependencies = TemperatureRoutesDependencies & ThresholdsRoutesDependencies;
 
 /**
  * Composes the Express application from its use cases. The driving adapter only
@@ -14,6 +15,7 @@ export function createApp(deps: AppDependencies): Express {
   app.use(express.json());
 
   app.use(temperatureRoutes(deps));
+  app.use(thresholdsRoutes(deps));
 
   app.use(errorHandler);
   return app;

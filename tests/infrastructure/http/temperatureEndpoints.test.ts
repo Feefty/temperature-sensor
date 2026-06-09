@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { GetTemperatureHistory } from '../../../src/application/GetTemperatureHistory';
 import { ReadTemperature } from '../../../src/application/ReadTemperature';
+import { UpdateThresholds } from '../../../src/application/UpdateThresholds';
 import { TemperatureSensor } from '../../../src/domain/ports/TemperatureSensor';
 import { Celsius } from '../../../src/domain/temperature/Celsius';
 import { Thresholds } from '../../../src/domain/temperature/Thresholds';
@@ -19,6 +20,7 @@ const buildApp = (sensor: TemperatureSensor) => {
   return createApp({
     readTemperature: new ReadTemperature(sensor, thresholdsRepo, historyRepo, clock),
     getTemperatureHistory: new GetTemperatureHistory(historyRepo),
+    updateThresholds: new UpdateThresholds(thresholdsRepo),
   });
 };
 
