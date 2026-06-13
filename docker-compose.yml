@@ -1,0 +1,10 @@
+services:
+  temperature-sensor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      TEMPERATURE_SENSOR_FIXED_VALUE: ${TEMPERATURE_SENSOR_FIXED_VALUE:-21.5}
+    init: true
+    ports:
+      - "${HOST_PORT:-3000}:3000"
