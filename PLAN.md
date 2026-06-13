@@ -52,10 +52,11 @@ src/
     domain/
       temperature-state.ts
       thresholds.ts
-      temperature-reading.ts
-      temperature-classifier.service.ts
+      temperature-classifier.ts
 
     application/
+      models/
+        temperature-reading.ts
       ports/
         temperature-sensor.port.ts
         temperature-history.repository.ts
@@ -102,7 +103,7 @@ How this maps to hexagonal architecture:
 Dependency direction must always point inward:
 
 ```txt
-HTTP controller -> use case -> domain service
+HTTP controller -> use-case function -> domain function
                      |
                      -> port interface
                           ^
@@ -160,7 +161,7 @@ Goal:
 
 Test-first steps:
 
-- Add tests for `TemperatureClassifierService` and `Thresholds` before implementing them.
+- Add tests for the `classifyTemperature` and `createThresholds` functions before implementing them.
 - Cover:
   - below `coldThreshold` => `COLD`
   - equal to `coldThreshold` => `WARM`
@@ -175,9 +176,9 @@ Implementation:
 
 - Add `src/temperature/domain/temperature-state.ts`.
 - Add `src/temperature/domain/thresholds.ts`.
-- Add `src/temperature/domain/temperature-reading.ts` if useful for shared types.
-- Add `src/temperature/domain/temperature-classifier.service.ts`.
+- Add `src/temperature/domain/temperature-classifier.ts`.
 - Keep these files framework-free: no Nest decorators, no `@nestjs/*` imports.
+- Implement domain behavior as pure functions because it has no state or external dependencies.
 
 Stop point:
 
@@ -200,29 +201,32 @@ Goal:
 Test-first steps:
 
 - Add use case tests with hand-written fakes or Jest mocks for ports.
-- Test `CaptureCurrentTemperatureUseCase`:
+- Test `captureCurrentTemperature`:
   - reads the sensor through `TemperatureSensorPort`
   - reads thresholds through `ThresholdsRepository`
   - classifies using current thresholds
   - stores a history entry
   - returns `id`, `temperature`, `state`, `thresholds`, and ISO-compatible `capturedAt`
   - stores threshold snapshots so old entries remain explainable after thresholds change
-- Test `GetTemperatureHistoryUseCase`:
+- Test `getTemperatureHistory`:
   - returns newest entries first
   - returns only the latest 15
   - returns `{ items, count, maxSize: 15 }`
-- Test `UpdateThresholdsUseCase`:
+- Test `updateThresholds`:
   - accepts only `hotThreshold`
   - accepts only `coldThreshold`
   - accepts both thresholds
   - rejects empty update input
   - rejects merged thresholds with range below `2`
   - does not mutate history
-- Test `GetThresholdsUseCase`:
+- Test `getThresholds`:
   - returns default/current thresholds from the repository
 
 Implementation:
 
+- Add `src/temperature/application/models/temperature-reading.ts` once the use-case tests establish its required shape.
+  - Include `id`, `temperature`, `state`, `thresholds`, and `capturedAt`.
+  - Keep the model immutable and preserve the thresholds used at capture time.
 - Add application ports:
   - `TemperatureSensorPort`
   - `TemperatureHistoryRepository`
@@ -230,11 +234,12 @@ Implementation:
   - `ClockPort`
   - `IdGeneratorPort`
 - Add use cases:
-  - `CaptureCurrentTemperatureUseCase`
-  - `GetTemperatureHistoryUseCase`
-  - `UpdateThresholdsUseCase`
-  - `GetThresholdsUseCase`
-- Use constructor injection against ports.
+  - `captureCurrentTemperature`
+  - `getTemperatureHistory`
+  - `updateThresholds`
+  - `getThresholds`
+- Implement each use case as a function that receives an explicitly typed dependency object and its input.
+- Keep dependency objects immutable and pass only the ports each function needs.
 - Do not import NestJS in use case files.
 
 Stop point:
@@ -300,7 +305,7 @@ Goal:
 Implementation:
 
 - Add `src/temperature/temperature.module.ts`.
-- Register use cases as Nest providers.
+- Register functional use cases with Nest factory providers that bind their required port implementations.
 - Register adapter implementations for each application port.
 - Add provider tokens for interfaces, because TypeScript interfaces do not exist at runtime.
 - Import `TemperatureModule` from `AppModule`.
@@ -542,6 +547,7 @@ Do not rely only on e2e tests. In this architecture, most meaningful behavior sh
 ## Assumptions
 
 - NestJS is used as the HTTP and dependency injection framework only; business logic stays outside Nest-specific classes where possible.
+- Domain rules and application use cases are functions. Classes are reserved for NestJS framework types, stateful repositories, and adapters to external systems.
 - Persistence is in memory, as allowed by the brief.
 - The fake production sensor is acceptable until a real sensor integration exists.
 - API validation uses Nest default error responses.
