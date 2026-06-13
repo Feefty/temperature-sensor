@@ -130,7 +130,7 @@ Goal:
 Implementation:
 
 - Add `.nvmrc` with Node.js `22`, the active LTS line to use for this project.
-- Add `package.json`, `yarn.lock`, `tsconfig.json`, `tsconfig.build.json`, `nest-cli.json`, Jest config, and basic Yarn scripts.
+- Add `package.json`, `yarn.lock`, `tsconfig.json`, `tsconfig.build.json`, `nest-cli.json`, Jest config, and basic Yarn scripts. Add necessary entries to `.gitignore`.
 - Add `src/main.ts` and `src/app.module.ts`.
 - Enable global `ValidationPipe` in `main.ts` using Nest default validation error behavior.
 - Add a basic health-neutral app setup only if needed by Nest defaults; do not add temperature behavior yet.
@@ -485,7 +485,7 @@ Stop point:
   thresholds: {
     coldThreshold: number;
     hotThreshold: number;
-  };
+  }
   capturedAt: string;
 }
 ```
