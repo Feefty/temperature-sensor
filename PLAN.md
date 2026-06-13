@@ -88,6 +88,8 @@ src/
           temperature-response.dto.ts
           thresholds-response.dto.ts
 
+    temperature-application.service.ts
+    temperature.tokens.ts
     temperature.module.ts
 ```
 
@@ -98,6 +100,8 @@ How this maps to hexagonal architecture:
 - `application/ports/` defines interfaces the use cases need, such as `TemperatureSensorPort` and `TemperatureHistoryRepository`. These are the edges of the core.
 - `infrastructure/` contains adapters that satisfy those ports. For this exercise, they will be in-memory repositories plus a configurable fake sensor.
 - `interface/http/` contains NestJS controllers and DTOs. This layer translates HTTP requests into use case calls and use case results into API responses.
+- `temperature-application.service.ts` is a thin Nest facade that binds outbound ports and delegates to pure use-case functions. It contains no business rules.
+- `temperature.tokens.ts` contains runtime identifiers only for outbound TypeScript interfaces, which Nest cannot inject by type.
 - `temperature.module.ts` wires ports to adapters using Nest providers. This is where NestJS dependency injection belongs.
 
 Port organization reminder:
@@ -318,7 +322,8 @@ Goal:
 Implementation:
 
 - Add `src/temperature/temperature.module.ts`.
-- Register functional use cases with Nest factory providers that bind their required port implementations.
+- Add an injectable application facade that binds outbound ports and delegates to the functional use cases.
+- Inject the facade directly into controllers; reserve provider tokens for outbound port interfaces that do not exist at runtime.
 - Register adapter implementations for each application port.
 - Add provider tokens for interfaces, because TypeScript interfaces do not exist at runtime.
 - Import `TemperatureModule` from `AppModule`.
