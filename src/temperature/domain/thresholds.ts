@@ -40,3 +40,5 @@ export function createThresholds(
 
   return { coldThreshold, hotThreshold };
 }
+
+export const DEFAULT_THRESHOLDS: Thresholds = createThresholds(22, 35);

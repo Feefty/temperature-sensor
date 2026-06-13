@@ -100,6 +100,19 @@ How this maps to hexagonal architecture:
 - `interface/http/` contains NestJS controllers and DTOs. This layer translates HTTP requests into use case calls and use case results into API responses.
 - `temperature.module.ts` wires ports to adapters using Nest providers. This is where NestJS dependency injection belongs.
 
+Port organization reminder:
+
+```txt
+application/
+  use-cases/       # inbound ports and their functional implementations together
+  ports/outbound/  # contracts required from external systems
+```
+
+For this small project, `application/ports/` is kept one level flatter than
+`application/ports/outbound/`. All ports in that folder are outbound ports. The
+use-case function signatures are the inbound contracts, so separate inbound
+port interfaces would add structure without adding useful separation here.
+
 Dependency direction must always point inward:
 
 ```txt
