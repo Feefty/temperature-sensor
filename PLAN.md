@@ -112,10 +112,7 @@ application/
   ports/outbound/  # contracts required from external systems
 ```
 
-For this small project, `application/ports/` is kept one level flatter than
-`application/ports/outbound/`. All ports in that folder are outbound ports. The
-use-case function signatures are the inbound contracts, so separate inbound
-port interfaces would add structure without adding useful separation here.
+For this small project, `application/ports/` is kept one level flatter than `application/ports/outbound/`. All ports in that folder are outbound ports. The use-case function signatures are the inbound contracts, so separate inbound port interfaces would add structure without adding useful separation here.
 
 Dependency direction must always point inward:
 

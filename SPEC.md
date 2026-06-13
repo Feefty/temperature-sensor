@@ -157,8 +157,7 @@ type ThresholdsResponse = {
 
 Optional, but useful so the user can inspect the current configuration. This endpoint is not strictly required, but it makes the threshold update feature inspectable and testable from the outside: since the API allows redefining thresholds, clients need a way to know the current active configuration.
 
-I choose not to expose a separate `warmThreshold`, because WARM is a derived value:  
-WARM = temperature >= coldThreshold AND temperature < hotThreshold
+I choose not to expose a separate `warmThreshold`, because WARM is a derived value: WARM = temperature >= coldThreshold AND temperature < hotThreshold
 
 Example response:
 
