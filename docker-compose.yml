@@ -18,8 +18,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./src/infrastructure/resources/db/migrations/001_initial_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
-      - ./src/infrastructure/resources/db/seeds/001_default_thresholds.sql:/docker-entrypoint-initdb.d/02_seeds.sql
+      - ./src/infrastructure/src/resources/db/migrations/001_initial_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
+      - ./src/infrastructure/src/resources/db/seeds/001_default_thresholds.sql:/docker-entrypoint-initdb.d/02_seeds.sql
       - pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U admin -d temperature_sensor"]
