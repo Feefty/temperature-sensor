@@ -1,4 +1,5 @@
 import { TemperatureReading } from '../../../application/models/temperature-reading';
+import type { TemperatureHistory } from '../../../application/use-cases/get-temperature-history.use-case';
 import { TemperatureState } from '../../../domain/temperature-state';
 import { Thresholds } from '../../../domain/thresholds';
 
@@ -13,7 +14,7 @@ export type TemperatureResponse = Readonly<{
 export type TemperatureHistoryResponse = Readonly<{
   items: TemperatureResponse[];
   count: number;
-  maxSize: 15;
+  maxSize: TemperatureHistory['maxSize'];
 }>;
 
 export function toTemperatureResponse(

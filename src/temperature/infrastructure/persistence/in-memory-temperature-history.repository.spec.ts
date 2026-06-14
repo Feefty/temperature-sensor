@@ -1,4 +1,5 @@
 import { TemperatureReading } from '../../application/models/temperature-reading';
+import { MAX_TEMPERATURE_HISTORY_SIZE } from '../../application/use-cases/get-temperature-history.use-case';
 import { createThresholds } from '../../domain/thresholds';
 import { InMemoryTemperatureHistoryRepository } from './in-memory-temperature-history.repository';
 
@@ -24,9 +25,11 @@ describe('InMemoryTemperatureHistoryRepository', () => {
       await repository.save(reading);
     }
 
-    const result: TemperatureReading[] = await repository.findRecent(15);
+    const result: TemperatureReading[] = await repository.findRecent(
+      MAX_TEMPERATURE_HISTORY_SIZE + 1,
+    );
 
-    expect(result).toHaveLength(15);
+    expect(result).toHaveLength(MAX_TEMPERATURE_HISTORY_SIZE);
     expect(result.map((reading: TemperatureReading): string => reading.id)).toEqual(
       readings
         .slice(1)

@@ -1,5 +1,6 @@
 import { TemperatureReading } from '../../application/models/temperature-reading';
 import { TemperatureHistoryRepository } from '../../application/ports/temperature-history.repository';
+import { MAX_TEMPERATURE_HISTORY_SIZE } from '../../application/use-cases/get-temperature-history.use-case';
 
 export class InvalidHistoryLimitError extends Error {
   constructor(limit: number) {
@@ -11,10 +12,15 @@ export class InvalidHistoryLimitError extends Error {
 export class InMemoryTemperatureHistoryRepository
   implements TemperatureHistoryRepository
 {
-  private readings: TemperatureReading[] = [];
+  private readonly readings: TemperatureReading[] = [];
 
   async save(reading: TemperatureReading): Promise<void> {
-    this.readings = [...this.readings, reading];
+    this.readings.push(reading);
+    this.readings.sort(
+      (first: TemperatureReading, second: TemperatureReading): number =>
+        second.capturedAt.getTime() - first.capturedAt.getTime(),
+    );
+    this.readings.splice(MAX_TEMPERATURE_HISTORY_SIZE);
   }
 
   async findRecent(limit: number): Promise<TemperatureReading[]> {
@@ -22,11 +28,6 @@ export class InMemoryTemperatureHistoryRepository
       throw new InvalidHistoryLimitError(limit);
     }
 
-    return [...this.readings]
-      .sort(
-        (first: TemperatureReading, second: TemperatureReading): number =>
-          second.capturedAt.getTime() - first.capturedAt.getTime(),
-      )
-      .slice(0, limit);
+    return this.readings.slice(0, limit);
   }
 }

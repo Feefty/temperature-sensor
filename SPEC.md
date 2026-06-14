@@ -65,6 +65,8 @@ This means: “show me the last 15 temperature requests.” It does not capture 
 
 Assumption: I choose to avoid adding pagination or custom limits because the brief says “last fifteen.”
 
+For this small exercise, the in-memory repository reuses the application use case's fixed history-size constant directly. In a larger production system, I would move this retention policy to a neutral shared model or inject it as configuration to avoid coupling the infrastructure adapter to a specific use case.
+
 Example response:
 
 ```ts
