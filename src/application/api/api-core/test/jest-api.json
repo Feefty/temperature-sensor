@@ -1,0 +1,8 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "../../../../..",
+  "testRegex": "(integration-spec|api-spec|security.spec|converter.spec)\\.ts$",
+  "transform": { "^.+\\.ts$": "ts-jest" },
+  "testEnvironment": "node",
+  "roots": ["<rootDir>/src/application/api/api-core/test"]
+}

@@ -1,0 +1,118 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { INestApplication } from '@nestjs/common';
+import request from 'supertest';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { SensorController } from '../../src/controllers/sensor.controller';
+import { DomainExceptionConverter } from '../../src/error.converter/domain-exception.converter';
+import { ValidationExceptionConverter } from '../../src/error.converter/validation-exception.converter';
+import { DomainException } from '../../../../../domain/domain-contract/exceptions/domain.exception';
+import { ValidationException } from '../../../../../domain/domain-contract/exceptions/validation.exception';
+
+describe('SensorController - API Error Tests', () => {
+
+  let DOMAIN_EXCEPTION_CODE : string = "DomainException";
+  let VALIDATION_EXCEPTION_CODE : string = 'ValidationException';
+  let SENSOR_CAPTURE_ROUTE : string = '/api/v1/sensors/capture';
+  let SENSOR_HISTORY_ROUTE : string = '/api/v1/sensors/history';
+
+  let app: INestApplication;
+  let commandBus: { execute: jest.Mock };
+  let queryBus: { execute: jest.Mock };
+
+  beforeAll(async () => {
+    commandBus = { execute: jest.fn() };
+    queryBus = { execute: jest.fn() };
+
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      controllers: [SensorController],
+      providers: [
+        { provide: CommandBus, useValue: commandBus },
+        { provide: QueryBus, useValue: queryBus },
+      ],
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+    app.useGlobalFilters(new DomainExceptionConverter(), new ValidationExceptionConverter());
+    await app.init();
+  });
+
+  afterAll(async () => { await app.close(); });
+  afterEach(() => { jest.resetAllMocks(); });
+
+  describe('GET /api/v1/sensors/capture - Error Responses', () => {
+    it('captureTemperature_shouldReturn422_whenDomainExceptionIsThrown', async () => {
+      commandBus.execute.mockRejectedValue(new DomainException('Sensor unavailable'));
+
+      const res = await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
+
+      expect(res.status).toBe(422);
+      expect(res.body).toMatchObject({
+        statusCode: 422,
+        code: DOMAIN_EXCEPTION_CODE,
+        message: 'Sensor unavailable',
+        path: SENSOR_CAPTURE_ROUTE,
+      });
+      expect(res.body.timestamp).toBeDefined();
+    });
+
+    it('captureTemperature_shouldReturn400_whenValidationExceptionIsThrown', async () => {
+      commandBus.execute.mockRejectedValue(new ValidationException('Invalid sensor configuration'));
+
+      const res = await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
+
+      expect(res.status).toBe(400);
+      expect(res.body).toMatchObject({
+        statusCode: 400,
+        code: VALIDATION_EXCEPTION_CODE,
+        message: 'Invalid sensor configuration',
+        path: SENSOR_CAPTURE_ROUTE,
+      });
+    });
+
+    it('captureTemperature_shouldReturn500_whenUnexpectedErrorIsThrown', async () => {
+      commandBus.execute.mockRejectedValue(new Error('Unexpected failure'));
+
+      const res = await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
+
+      expect(res.status).toBe(500);
+    });
+  });
+
+  describe('GET /api/v1/sensors/history - Error Responses', () => {
+    it('getTemperatureHistory_shouldReturn422_whenDomainExceptionIsThrown', async () => {
+      queryBus.execute.mockRejectedValue(new DomainException('Repository connection lost'));
+
+      const res = await request(app.getHttpServer()).get(SENSOR_HISTORY_ROUTE);
+
+      expect(res.status).toBe(422);
+      expect(res.body).toMatchObject({
+        statusCode: 422,
+        code: DOMAIN_EXCEPTION_CODE,
+        message: 'Repository connection lost',
+        path: SENSOR_HISTORY_ROUTE,
+      });
+    });
+
+    it('getTemperatureHistory_shouldReturn400_whenValidationExceptionIsThrown', async () => {
+      queryBus.execute.mockRejectedValue(new ValidationException('Invalid query parameters'));
+
+      const res = await request(app.getHttpServer()).get(SENSOR_HISTORY_ROUTE);
+
+      expect(res.status).toBe(400);
+      expect(res.body).toMatchObject({
+        statusCode: 400,
+        code: VALIDATION_EXCEPTION_CODE,
+        message: 'Invalid query parameters',
+        path: SENSOR_HISTORY_ROUTE,
+      });
+    });
+
+    it('getTemperatureHistory_shouldReturn500_whenUnexpectedErrorIsThrown', async () => {
+      queryBus.execute.mockRejectedValue(new Error('Database timeout'));
+
+      const res = await request(app.getHttpServer()).get(SENSOR_HISTORY_ROUTE);
+
+      expect(res.status).toBe(500);
+    });
+  });
+});
