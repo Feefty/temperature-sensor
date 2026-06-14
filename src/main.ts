@@ -19,9 +19,11 @@ async function bootstrap() {
   app.useGlobalFilters(new DomainExceptionConverter(), new ValidationExceptionConverter());
   app.useGlobalInterceptors(new LoggingInterceptor());
 
-  // Serve static OpenAPI spec (contract = source of truth)
-  const specPath = path.resolve(__dirname, '..', 'src', 'api', 'api-contract', 'openapi.yaml');
-  const spec = yaml.load(fs.readFileSync(specPath, 'utf8')) as Record<string, unknown>;
+  // Serve OpenAPI spec
+  const openapiPath = path.resolve(
+    __dirname, '..', 'src', 'application', 'api', 'api-contract', 'openapi.yaml'
+  );
+  const spec = yaml.load(fs.readFileSync(openapiPath, 'utf8')) as Record<string, unknown>;
   SwaggerModule.setup('api-docs', app, spec as any);
 
   const port = process.env.PORT || 3000;
