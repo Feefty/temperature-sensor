@@ -7,6 +7,6 @@ export function toDomain(entity: ThresholdEntity | null): Threshold | null {
     id: entity.id,
     coldMax: Number(entity.coldMax),
     hotMin: Number(entity.hotMin),
-    updatedAt: entity.updatedAt
+    updatedAt: entity.updatedAt,
   };
 }

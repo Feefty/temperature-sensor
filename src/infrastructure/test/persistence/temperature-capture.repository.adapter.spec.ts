@@ -15,15 +15,20 @@ describe('TemperatureCaptureRepositoryAdapterTest', () => {
     adapter = new TemperatureCaptureRepositoryAdapter(repo);
   }, 60000);
 
-  afterAll(async () => { await stopTestDatabase(); });
-  beforeEach(async () => { await repo.clear(); });
+  afterAll(async () => {
+    await stopTestDatabase();
+  });
+  beforeEach(async () => {
+    await repo.clear();
+  });
 
   //region save
   it('save_shouldPersistCapture_whenValidCaptureProvided', async () => {
     await adapter.save({
       id: uuidv4(),
       value: 25.5,
-      state: TemperatureState.WARM, capturedAt: new Date()
+      state: TemperatureState.WARM,
+      capturedAt: new Date(),
     });
 
     const results = await adapter.findLastN(10);
@@ -39,7 +44,7 @@ describe('TemperatureCaptureRepositoryAdapterTest', () => {
         id: uuidv4(),
         value: 20 + i,
         state: TemperatureState.WARM,
-        capturedAt: new Date(Date.now() + i * 1000)
+        capturedAt: new Date(Date.now() + i * 1000),
       });
     }
 
@@ -57,7 +62,7 @@ describe('TemperatureCaptureRepositoryAdapterTest', () => {
         id: uuidv4(),
         value: i,
         state: TemperatureState.WARM,
-        capturedAt: new Date(Date.now() + i * 100)
+        capturedAt: new Date(Date.now() + i * 100),
       });
     }
 

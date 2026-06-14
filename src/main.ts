@@ -21,7 +21,13 @@ async function bootstrap() {
 
   // Serve openapi spec
   const openapiPath = path.resolve(
-    __dirname, '..', 'src', 'application', 'api', 'api-contract', 'openapi.yaml'
+    __dirname,
+    '..',
+    'src',
+    'application',
+    'api',
+    'api-contract',
+    'openapi.yaml',
   );
   const spec = yaml.load(fs.readFileSync(openapiPath, 'utf8')) as Record<string, unknown>;
   SwaggerModule.setup('api-docs', app, spec as any);

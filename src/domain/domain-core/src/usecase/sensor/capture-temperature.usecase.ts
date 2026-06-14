@@ -5,12 +5,17 @@ import { TemperatureCapture } from '../../../../domain-contract/models/temperatu
 import { TemperatureState } from '../../../../domain-contract/models/temperature-state.enum';
 import { TemperatureCaptureRepositoryPort } from '../../../../domain-contract/ports/secondary/temperature-capture.repository.port';
 import { ThresholdRepositoryPort } from '../../../../domain-contract/ports/secondary/threshold.repository.port';
-import { TEMPERATURE_CAPTURE_REPOSITORY, THRESHOLD_REPOSITORY } from '../../../../../shared/dinjection/tokens/injection-tokens';
+import {
+  TEMPERATURE_CAPTURE_REPOSITORY,
+  THRESHOLD_REPOSITORY,
+} from '../../../../../shared/dinjection/tokens/injection-tokens';
 import { v4 as uuidv4 } from 'uuid';
 import { DomainException } from '../../../../domain-contract/exceptions/domain.exception';
 
 @CommandHandler(CaptureTemperatureAction)
-export class CaptureTemperatureUseCase implements ICommandHandler<CaptureTemperatureAction, TemperatureCapture> {
+export class CaptureTemperatureUseCase
+  implements ICommandHandler<CaptureTemperatureAction, TemperatureCapture>
+{
   constructor(
     @Inject(TEMPERATURE_CAPTURE_REPOSITORY)
     private readonly captureRepository: TemperatureCaptureRepositoryPort,
@@ -26,7 +31,7 @@ export class CaptureTemperatureUseCase implements ICommandHandler<CaptureTempera
       id: uuidv4(),
       value,
       state,
-      capturedAt: new Date()
+      capturedAt: new Date(),
     };
     await this.captureRepository.save(capture);
     return capture;

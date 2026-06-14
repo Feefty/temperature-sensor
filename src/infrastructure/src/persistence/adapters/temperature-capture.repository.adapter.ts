@@ -10,7 +10,7 @@ import { toDomain, toEntity } from '../mappers/temperature-capture.persistence-m
 export class TemperatureCaptureRepositoryAdapter implements TemperatureCaptureRepositoryPort {
   constructor(
     @InjectRepository(TemperatureCaptureEntity)
-    private readonly repo: Repository<TemperatureCaptureEntity>
+    private readonly repo: Repository<TemperatureCaptureEntity>,
   ) {}
 
   async save(capture: TemperatureCapture): Promise<void> {

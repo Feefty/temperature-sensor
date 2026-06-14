@@ -12,7 +12,9 @@ describe('CaptureTemperatureUseCase', () => {
   beforeEach(() => {
     captureRepository = { save: jest.fn().mockResolvedValue(undefined), findLastN: jest.fn() };
     thresholdRepository = {
-      getCurrent: jest.fn().mockResolvedValue({ id: 'thr-1', coldMax: 22, hotMin: 35, updatedAt: new Date() }),
+      getCurrent: jest
+        .fn()
+        .mockResolvedValue({ id: 'thr-1', coldMax: 22, hotMin: 35, updatedAt: new Date() }),
       update: jest.fn(),
     };
     usecase = new CaptureTemperatureUseCase(captureRepository, thresholdRepository);
@@ -37,26 +39,31 @@ describe('CaptureTemperatureUseCase', () => {
 
     expect(captureRepository.save).toHaveBeenCalledTimes(1);
     expect(thresholdRepository.getCurrent).toHaveBeenCalledTimes(1);
-    expect(captureRepository.save).toHaveBeenCalledWith(expect.objectContaining({
-      id: expect.any(String),
-      value: expect.any(Number),
-      state: expect.any(String),
-      capturedAt: expect.any(Date),
-    }));
+    expect(captureRepository.save).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: expect.any(String),
+        value: expect.any(Number),
+        state: expect.any(String),
+        capturedAt: expect.any(Date),
+      }),
+    );
   });
 
   it.each([
     ['HOT', 0.9667, TemperatureState.HOT],
     ['COLD', 0.1, TemperatureState.COLD],
     ['WARM', 0.5833, TemperatureState.WARM],
-  ])('execute_shouldClassifyAs%s_whenRandomValueProduces%s', async (_label, randomValue, expectedState) => {
-    jest.spyOn(Math, 'random').mockReturnValue(randomValue);
+  ])(
+    'execute_shouldClassifyAs%s_whenRandomValueProduces%s',
+    async (_label, randomValue, expectedState) => {
+      jest.spyOn(Math, 'random').mockReturnValue(randomValue);
 
-    const result = await usecase.execute();
+      const result = await usecase.execute();
 
-    expect(result.state).toBe(expectedState);
-    jest.restoreAllMocks();
-  });
+      expect(result.state).toBe(expectedState);
+      jest.restoreAllMocks();
+    },
+  );
   //endregion
 
   //region Error scenarios

@@ -7,11 +7,14 @@ import { toThresholdResponse } from '../mappers/threshold.mapper';
 import { Deserializer } from '../configuration/deserializer';
 import { zUpdateThresholdsRequest } from '../../../api-contract/generated/zod.gen';
 import type { ThresholdsControllerMethods } from '../../../api-contract/generated/nestjs.gen';
-import type { ThresholdsResponse, UpdateThresholdsRequest, UpdateThresholdsResponse } from '../../../api-contract/generated/types.gen';
+import type {
+  ThresholdsResponse,
+  UpdateThresholdsRequest,
+  UpdateThresholdsResponse,
+} from '../../../api-contract/generated/types.gen';
 
 @Controller('api/v1/thresholds')
 export class ThresholdController implements ThresholdsControllerMethods {
-
   /*
      NestJs CQRS Mediator pattern already pre-defined in nestjs (not the same in java)
      No need to pass by primary ports interfaces, NestJs maps the domain use cases
@@ -25,9 +28,7 @@ export class ThresholdController implements ThresholdsControllerMethods {
 
   @Get()
   async thresholds(): Promise<ThresholdsResponse> {
-    const result: Threshold = await this.queryBus.execute(
-      new GetThresholdsQuery()
-    );
+    const result: Threshold = await this.queryBus.execute(new GetThresholdsQuery());
     return toThresholdResponse(result);
   }
 

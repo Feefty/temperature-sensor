@@ -9,7 +9,6 @@ import { DomainException } from '../../../../../domain/domain-contract/exception
 import { ValidationException } from '../../../../../domain/domain-contract/exceptions/validation.exception';
 
 describe('ThresholdController - API Error Tests', () => {
-
   const DOMAIN_EXCEPTION_CODE = 'DomainException';
   const VALIDATION_EXCEPTION_CODE = 'ValidationException';
   const THRESHOLD_ROUTE = '/api/v1/thresholds';
@@ -35,8 +34,12 @@ describe('ThresholdController - API Error Tests', () => {
     await app.init();
   });
 
-  afterAll(async () => { await app.close(); });
-  afterEach(() => { jest.resetAllMocks(); });
+  afterAll(async () => {
+    await app.close();
+  });
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
 
   //region GET /api/v1/thresholds - Error Responses
   describe('GET /api/v1/thresholds - Error Responses', () => {
@@ -84,7 +87,9 @@ describe('ThresholdController - API Error Tests', () => {
     });
 
     it('updateThresholds_shouldReturn400_whenValidationExceptionIsThrown', async () => {
-      commandBus.execute.mockRejectedValue(new ValidationException('coldMax must be less than hotMin'));
+      commandBus.execute.mockRejectedValue(
+        new ValidationException('coldMax must be less than hotMin'),
+      );
 
       const res = await request(app.getHttpServer())
         .put(THRESHOLD_ROUTE)
@@ -123,9 +128,7 @@ describe('ThresholdController - API Error Tests', () => {
     });
 
     it('updateThresholds_shouldReturn400BeforeReachingDomain_whenBodyEmpty', async () => {
-      const res = await request(app.getHttpServer())
-        .put(THRESHOLD_ROUTE)
-        .send({});
+      const res = await request(app.getHttpServer()).put(THRESHOLD_ROUTE).send({});
 
       expect(res.status).toBe(400);
       expect(commandBus.execute).not.toHaveBeenCalled();

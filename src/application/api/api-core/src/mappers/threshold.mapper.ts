@@ -6,6 +6,6 @@ export function toThresholdResponse(model: Threshold): ThresholdResponse {
     id: model.id,
     coldMax: model.coldMax,
     hotMin: model.hotMin,
-    updatedAt: model.updatedAt.toISOString()
+    updatedAt: model.updatedAt.toISOString(),
   };
 }

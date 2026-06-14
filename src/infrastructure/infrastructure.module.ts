@@ -4,7 +4,10 @@ import { TemperatureCaptureEntity } from './src/persistence/entities/temperature
 import { ThresholdEntity } from './src/persistence/entities/threshold.entity';
 import { TemperatureCaptureRepositoryAdapter } from './src/persistence/adapters/temperature-capture.repository.adapter';
 import { ThresholdRepositoryAdapter } from './src/persistence/adapters/threshold.repository.adapter';
-import { TEMPERATURE_CAPTURE_REPOSITORY, THRESHOLD_REPOSITORY } from '../shared/dinjection/tokens/injection-tokens';
+import {
+  TEMPERATURE_CAPTURE_REPOSITORY,
+  THRESHOLD_REPOSITORY,
+} from '../shared/dinjection/tokens/injection-tokens';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TemperatureCaptureEntity, ThresholdEntity])],

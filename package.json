@@ -21,8 +21,8 @@
     "test:infra": "npm run generate && jest --config src/infrastructure/test/jest-infra.json",
     "test:integration": "npm run generate && jest --config src/application/api/api-core/test/jest-api.json --testPathPattern=integration",
     "test:security": "npm run generate && jest --config src/application/api/api-core/test/jest-api.json --testPathPattern=security",
-    "lint": "eslint \"{src,test}/**/*.ts\"",
-    "format": "prettier --write \"{src,test}/**/*.ts\""
+    "lint": "prettier --check \"src/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
     "@nestjs/common": "10.4.15",

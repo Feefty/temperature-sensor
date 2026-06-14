@@ -8,7 +8,9 @@ import { TEMPERATURE_CAPTURE_REPOSITORY } from '../../../../../shared/dinjection
 const MAX_HISTORY_SIZE = 15;
 
 @QueryHandler(GetTemperatureHistoryQuery)
-export class GetTemperatureHistoryUseCase implements IQueryHandler<GetTemperatureHistoryQuery, TemperatureCapture[]> {
+export class GetTemperatureHistoryUseCase
+  implements IQueryHandler<GetTemperatureHistoryQuery, TemperatureCapture[]>
+{
   constructor(
     @Inject(TEMPERATURE_CAPTURE_REPOSITORY)
     private readonly captureRepository: TemperatureCaptureRepositoryPort,

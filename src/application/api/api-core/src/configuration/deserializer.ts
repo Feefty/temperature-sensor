@@ -17,7 +17,7 @@ export class Deserializer implements PipeTransform {
     throw new BadRequestException({
       statusCode: 400,
       message: messages,
-      error: 'Bad Request'
+      error: 'Bad Request',
     });
   }
 }

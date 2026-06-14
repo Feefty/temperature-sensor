@@ -24,7 +24,7 @@ describe('ThresholdRepositoryAdapterTest', () => {
     // values from the db resource seeding SQL script
     expect(result).toMatchObject({
       coldMax: 22,
-      hotMin: 35
+      hotMin: 35,
     });
   });
 
@@ -43,7 +43,7 @@ describe('ThresholdRepositoryAdapterTest', () => {
 
     expect(result).toMatchObject({
       coldMax: 18,
-      hotMin: 30
+      hotMin: 30,
     });
   });
 
@@ -53,7 +53,7 @@ describe('ThresholdRepositoryAdapterTest', () => {
     const result = await adapter.getCurrent();
     expect(result).toMatchObject({
       coldMax: 15,
-      hotMin: 40
+      hotMin: 40,
     });
   });
   //endregion

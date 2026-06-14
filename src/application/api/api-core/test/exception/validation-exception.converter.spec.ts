@@ -25,13 +25,15 @@ describe('ValidationExceptionConverter', () => {
     converter.catch(new ValidationException('coldMax must be less than hotMin'), mockHost);
 
     expect(mockStatus).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-    expect(mockJson).toHaveBeenCalledWith(expect.objectContaining({
-      statusCode: 400,
-      code: 'ValidationException',
-      message: 'coldMax must be less than hotMin',
-      path: '/api/v1/thresholds',
-      timestamp: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/),
-    }));
+    expect(mockJson).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 400,
+        code: 'ValidationException',
+        message: 'coldMax must be less than hotMin',
+        path: '/api/v1/thresholds',
+        timestamp: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/),
+      }),
+    );
   });
   //endregion
 });

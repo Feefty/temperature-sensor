@@ -7,7 +7,7 @@ export function toDomain(entity: TemperatureCaptureEntity): TemperatureCapture {
     id: entity.id,
     value: Number(entity.value),
     state: entity.state as TemperatureState,
-    capturedAt: entity.capturedAt
+    capturedAt: entity.capturedAt,
   };
 }
 
@@ -16,6 +16,6 @@ export function toEntity(model: TemperatureCapture): Partial<TemperatureCaptureE
     id: model.id,
     value: model.value,
     state: model.state,
-    capturedAt: model.capturedAt
+    capturedAt: model.capturedAt,
   };
 }

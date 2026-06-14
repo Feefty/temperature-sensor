@@ -13,7 +13,10 @@ import { CaptureTemperatureUseCase } from '../../../../../domain/domain-core/src
 import { GetTemperatureHistoryUseCase } from '../../../../../domain/domain-core/src/usecase/sensor/get-temperature-history.usecase';
 import { GetThresholdsUseCase } from '../../../../../domain/domain-core/src/usecase/threshold/get-thresholds.usecase';
 import { UpdateThresholdsUseCase } from '../../../../../domain/domain-core/src/usecase/threshold/update-thresholds.usecase';
-import { TEMPERATURE_CAPTURE_REPOSITORY, THRESHOLD_REPOSITORY } from '../../../../../shared/dinjection/tokens/injection-tokens';
+import {
+  TEMPERATURE_CAPTURE_REPOSITORY,
+  THRESHOLD_REPOSITORY,
+} from '../../../../../shared/dinjection/tokens/injection-tokens';
 import { TemperatureCaptureRepositoryAdapter } from '../../../../../infrastructure/src/persistence/adapters/temperature-capture.repository.adapter';
 import { ThresholdRepositoryAdapter } from '../../../../../infrastructure/src/persistence/adapters/threshold.repository.adapter';
 import { TemperatureCaptureEntity } from '../../../../../infrastructure/src/persistence/entities/temperature-capture.entity';
@@ -23,7 +26,6 @@ import { DomainExceptionConverter } from '../../src/error.converter/domain-excep
 import { ValidationExceptionConverter } from '../../src/error.converter/validation-exception.converter';
 
 describe('ThresholdController - Integration Tests', () => {
-
   const THRESHOLDS_ROUTE = '/api/v1/thresholds';
   const SENSOR_CAPTURE_ROUTE = '/api/v1/sensors/capture';
   const TIME_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;
@@ -34,7 +36,11 @@ describe('ThresholdController - Integration Tests', () => {
 
   beforeAll(async () => {
     container = await new GenericContainer('postgres:16-alpine')
-      .withEnvironment({ POSTGRES_DB: 'test_db', POSTGRES_USER: 'admin', POSTGRES_PASSWORD: 'password' })
+      .withEnvironment({
+        POSTGRES_DB: 'test_db',
+        POSTGRES_USER: 'admin',
+        POSTGRES_PASSWORD: 'password',
+      })
       .withExposedPorts(5432)
       .withWaitStrategy(Wait.forLogMessage('database system is ready to accept connections', 2))
       .start();
@@ -46,14 +52,23 @@ describe('ThresholdController - Integration Tests', () => {
       imports: [
         CqrsModule,
         TypeOrmModule.forRoot({
-          type: 'postgres', host, port, username: 'admin', password: 'password', database: 'test_db',
-          entities: [TemperatureCaptureEntity, ThresholdEntity], synchronize: false,
+          type: 'postgres',
+          host,
+          port,
+          username: 'admin',
+          password: 'password',
+          database: 'test_db',
+          entities: [TemperatureCaptureEntity, ThresholdEntity],
+          synchronize: false,
         }),
         TypeOrmModule.forFeature([TemperatureCaptureEntity, ThresholdEntity]),
       ],
       controllers: [SensorController, ThresholdController],
       providers: [
-        CaptureTemperatureUseCase, GetTemperatureHistoryUseCase, GetThresholdsUseCase, UpdateThresholdsUseCase,
+        CaptureTemperatureUseCase,
+        GetTemperatureHistoryUseCase,
+        GetThresholdsUseCase,
+        UpdateThresholdsUseCase,
         { provide: TEMPERATURE_CAPTURE_REPOSITORY, useClass: TemperatureCaptureRepositoryAdapter },
         { provide: THRESHOLD_REPOSITORY, useClass: ThresholdRepositoryAdapter },
       ],
@@ -65,10 +80,18 @@ describe('ThresholdController - Integration Tests', () => {
 
     dataSource = moduleFixture.get(DataSource);
     const migrationSql = fs.readFileSync(
-      path.resolve(__dirname, '../../../../../infrastructure/src/resources/db/migrations/001_initial_schema.sql'), 'utf8',
+      path.resolve(
+        __dirname,
+        '../../../../../infrastructure/src/resources/db/migrations/001_initial_schema.sql',
+      ),
+      'utf8',
     );
     const seedSql = fs.readFileSync(
-      path.resolve(__dirname, '../../../../../infrastructure/src/resources/db/seeds/001_default_thresholds.sql'), 'utf8',
+      path.resolve(
+        __dirname,
+        '../../../../../infrastructure/src/resources/db/seeds/001_default_thresholds.sql',
+      ),
+      'utf8',
     );
     await dataSource.query(migrationSql);
     await dataSource.query(seedSql);
@@ -107,9 +130,7 @@ describe('ThresholdController - Integration Tests', () => {
     });
 
     it('updateThresholds_shouldPersistNewValues_whenValid', async () => {
-      await request(app.getHttpServer())
-        .put(THRESHOLDS_ROUTE)
-        .send({ coldMax: 18, hotMin: 40 });
+      await request(app.getHttpServer()).put(THRESHOLDS_ROUTE).send({ coldMax: 18, hotMin: 40 });
 
       const res = await request(app.getHttpServer()).get(THRESHOLDS_ROUTE);
       expect(res.body).toMatchObject({ coldMax: 18, hotMin: 40 });
@@ -125,9 +146,7 @@ describe('ThresholdController - Integration Tests', () => {
     });
 
     it('updateThresholds_shouldApplyNewThresholds_whenCapturingAfterUpdate', async () => {
-      await request(app.getHttpServer())
-        .put(THRESHOLDS_ROUTE)
-        .send({ coldMax: 10, hotMin: 15 });
+      await request(app.getHttpServer()).put(THRESHOLDS_ROUTE).send({ coldMax: 10, hotMin: 15 });
 
       const captureRes = await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
       expect(captureRes.status).toBe(200);
@@ -149,9 +168,7 @@ describe('ThresholdController - Integration Tests', () => {
       ['coldMax is not a number', { coldMax: 'abc', hotMin: 35 }],
       ['hotMin is not a number', { coldMax: 22, hotMin: 'xyz' }],
     ])('updateThresholds_shouldReturn400_when%s', async (_label, body) => {
-      const res = await request(app.getHttpServer())
-        .put(THRESHOLDS_ROUTE)
-        .send(body);
+      const res = await request(app.getHttpServer()).put(THRESHOLDS_ROUTE).send(body);
 
       expect(res.status).toBe(400);
     });
@@ -164,9 +181,7 @@ describe('ThresholdController - Integration Tests', () => {
       ['coldMax > hotMin', { coldMax: 40, hotMin: 20 }],
       ['coldMax equals hotMin', { coldMax: 30, hotMin: 30 }],
     ])('updateThresholds_shouldReturn400_when%s', async (_label, body) => {
-      const res = await request(app.getHttpServer())
-        .put(THRESHOLDS_ROUTE)
-        .send(body);
+      const res = await request(app.getHttpServer()).put(THRESHOLDS_ROUTE).send(body);
 
       expect(res.status).toBe(400);
       expect(res.body).toMatchObject({

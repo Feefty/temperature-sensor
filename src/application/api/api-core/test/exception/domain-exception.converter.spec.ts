@@ -25,13 +25,15 @@ describe('DomainExceptionConverter', () => {
     converter.catch(new DomainException('Something went wrong'), mockHost);
 
     expect(mockStatus).toHaveBeenCalledWith(HttpStatus.UNPROCESSABLE_ENTITY);
-    expect(mockJson).toHaveBeenCalledWith(expect.objectContaining({
-      statusCode: 422,
-      code: 'DomainException',
-      message: 'Something went wrong',
-      path: '/api/v1/test',
-      timestamp: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/),
-    }));
+    expect(mockJson).toHaveBeenCalledWith(
+      expect.objectContaining({
+        statusCode: 422,
+        code: 'DomainException',
+        message: 'Something went wrong',
+        path: '/api/v1/test',
+        timestamp: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/),
+      }),
+    );
   });
   //endregion
 });

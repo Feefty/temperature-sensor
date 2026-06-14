@@ -10,9 +10,11 @@ describe('UpdateThresholdsUseCase', () => {
   beforeEach(() => {
     thresholdRepository = {
       getCurrent: jest.fn(),
-      update: jest.fn().mockImplementation((coldMax, hotMin) =>
-        Promise.resolve({ id: 'thr-1', coldMax, hotMin, updatedAt: new Date() }),
-      ),
+      update: jest
+        .fn()
+        .mockImplementation((coldMax, hotMin) =>
+          Promise.resolve({ id: 'thr-1', coldMax, hotMin, updatedAt: new Date() }),
+        ),
     };
     usecase = new UpdateThresholdsUseCase(thresholdRepository);
   });
@@ -33,9 +35,9 @@ describe('UpdateThresholdsUseCase', () => {
     ['coldMax below minimum bound', -60, 30],
     ['hotMin above maximum bound', 20, 65],
   ])('execute_shouldThrowValidationException_when%s', async (_label, coldMax, hotMin) => {
-    await expect(
-      usecase.execute(new UpdateThresholdsAction(coldMax, hotMin))
-    ).rejects.toThrow(ValidationException);
+    await expect(usecase.execute(new UpdateThresholdsAction(coldMax, hotMin))).rejects.toThrow(
+      ValidationException,
+    );
 
     expect(thresholdRepository.update).not.toHaveBeenCalled();
   });

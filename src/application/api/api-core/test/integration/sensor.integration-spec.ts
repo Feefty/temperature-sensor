@@ -13,7 +13,10 @@ import { CaptureTemperatureUseCase } from '../../../../../domain/domain-core/src
 import { GetTemperatureHistoryUseCase } from '../../../../../domain/domain-core/src/usecase/sensor/get-temperature-history.usecase';
 import { GetThresholdsUseCase } from '../../../../../domain/domain-core/src/usecase/threshold/get-thresholds.usecase';
 import { UpdateThresholdsUseCase } from '../../../../../domain/domain-core/src/usecase/threshold/update-thresholds.usecase';
-import { TEMPERATURE_CAPTURE_REPOSITORY, THRESHOLD_REPOSITORY } from '../../../../../shared/dinjection/tokens/injection-tokens';
+import {
+  TEMPERATURE_CAPTURE_REPOSITORY,
+  THRESHOLD_REPOSITORY,
+} from '../../../../../shared/dinjection/tokens/injection-tokens';
 import { TemperatureCaptureRepositoryAdapter } from '../../../../../infrastructure/src/persistence/adapters/temperature-capture.repository.adapter';
 import { ThresholdRepositoryAdapter } from '../../../../../infrastructure/src/persistence/adapters/threshold.repository.adapter';
 import { TemperatureCaptureEntity } from '../../../../../infrastructure/src/persistence/entities/temperature-capture.entity';
@@ -23,7 +26,6 @@ import { DomainExceptionConverter } from '../../src/error.converter/domain-excep
 import { ValidationExceptionConverter } from '../../src/error.converter/validation-exception.converter';
 
 describe('SensorController - Integration Tests', () => {
-
   const SENSOR_CAPTURE_ROUTE = '/api/v1/sensors/capture';
   const SENSOR_HISTORY_ROUTE = '/api/v1/sensors/history';
   const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -35,7 +37,11 @@ describe('SensorController - Integration Tests', () => {
 
   beforeAll(async () => {
     container = await new GenericContainer('postgres:16-alpine')
-      .withEnvironment({ POSTGRES_DB: 'test_db', POSTGRES_USER: 'admin', POSTGRES_PASSWORD: 'password' })
+      .withEnvironment({
+        POSTGRES_DB: 'test_db',
+        POSTGRES_USER: 'admin',
+        POSTGRES_PASSWORD: 'password',
+      })
       .withExposedPorts(5432)
       .withWaitStrategy(Wait.forLogMessage('database system is ready to accept connections', 2))
       .start();
@@ -47,14 +53,23 @@ describe('SensorController - Integration Tests', () => {
       imports: [
         CqrsModule,
         TypeOrmModule.forRoot({
-          type: 'postgres', host, port, username: 'admin', password: 'password', database: 'test_db',
-          entities: [TemperatureCaptureEntity, ThresholdEntity], synchronize: false,
+          type: 'postgres',
+          host,
+          port,
+          username: 'admin',
+          password: 'password',
+          database: 'test_db',
+          entities: [TemperatureCaptureEntity, ThresholdEntity],
+          synchronize: false,
         }),
         TypeOrmModule.forFeature([TemperatureCaptureEntity, ThresholdEntity]),
       ],
       controllers: [SensorController, ThresholdController],
       providers: [
-        CaptureTemperatureUseCase, GetTemperatureHistoryUseCase, GetThresholdsUseCase, UpdateThresholdsUseCase,
+        CaptureTemperatureUseCase,
+        GetTemperatureHistoryUseCase,
+        GetThresholdsUseCase,
+        UpdateThresholdsUseCase,
         { provide: TEMPERATURE_CAPTURE_REPOSITORY, useClass: TemperatureCaptureRepositoryAdapter },
         { provide: THRESHOLD_REPOSITORY, useClass: ThresholdRepositoryAdapter },
       ],
@@ -66,10 +81,18 @@ describe('SensorController - Integration Tests', () => {
 
     dataSource = moduleFixture.get(DataSource);
     const migrationSql = fs.readFileSync(
-      path.resolve(__dirname, '../../../../../infrastructure/src/resources/db/migrations/001_initial_schema.sql'), 'utf8',
+      path.resolve(
+        __dirname,
+        '../../../../../infrastructure/src/resources/db/migrations/001_initial_schema.sql',
+      ),
+      'utf8',
     );
     const seedSql = fs.readFileSync(
-      path.resolve(__dirname, '../../../../../infrastructure/src/resources/db/seeds/001_default_thresholds.sql'), 'utf8',
+      path.resolve(
+        __dirname,
+        '../../../../../infrastructure/src/resources/db/seeds/001_default_thresholds.sql',
+      ),
+      'utf8',
     );
     await dataSource.query(migrationSql);
     await dataSource.query(seedSql);
