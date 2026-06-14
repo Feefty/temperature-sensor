@@ -3,7 +3,7 @@ import { Inject } from '@nestjs/common';
 import { UpdateThresholdsAction } from '../../../../domain-contract/command/action/threshold/update-thresholds.action';
 import { Threshold } from '../../../../domain-contract/models/threshold.model';
 import { ThresholdRepositoryPort } from '../../../../domain-contract/ports/secondary/threshold.repository.port';
-import { THRESHOLD_REPOSITORY } from '../../../../../shared/constants/injection-tokens';
+import { THRESHOLD_REPOSITORY } from '../../../../../shared/dinjection/tokens/injection-tokens';
 import { validateThresholds } from '../../validation/threshold.validator';
 
 @CommandHandler(UpdateThresholdsAction)

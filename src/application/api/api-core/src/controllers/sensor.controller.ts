@@ -9,21 +9,31 @@ import type { CaptureTemperatureResponse, TemperatureHistoryResponse } from '../
 
 @Controller('api/v1/sensors')
 export class SensorController implements SensorsControllerMethods {
+
+  /*
+     NestJs CQRS Mediator pattern already pre-defined in nestjs (not the same in java)
+     No need to pass by primary ports interfaces, NestJs maps the domain use cases
+     with the used Action/Query from IQuery/ICommand interfaces
+  */
+
   constructor(
-    // Mediator pattern already pre-defined in nestjs (not the same in java)
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
 
   @Get('capture')
   async captureTemperature(): Promise<CaptureTemperatureResponse> {
-    const result: TemperatureCapture = await this.commandBus.execute(new CaptureTemperatureAction());
+    const result: TemperatureCapture = await this.commandBus.execute(
+      new CaptureTemperatureAction(),
+    );
     return toTemperatureCaptureResponse(result);
   }
 
   @Get('history')
   async temperatureHistory(): Promise<TemperatureHistoryResponse> {
-    const result: TemperatureCapture[] = await this.queryBus.execute(new GetTemperatureHistoryQuery());
+    const result: TemperatureCapture[] = await this.queryBus.execute(
+      new GetTemperatureHistoryQuery(),
+    );
     return toTemperatureCaptureResponseList(result);
   }
 }

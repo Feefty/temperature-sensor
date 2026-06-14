@@ -8,14 +8,21 @@ import { toDomain, toEntity } from '../mappers/temperature-capture.persistence-m
 
 @Injectable()
 export class TemperatureCaptureRepositoryAdapter implements TemperatureCaptureRepositoryPort {
-  constructor(@InjectRepository(TemperatureCaptureEntity) private readonly repo: Repository<TemperatureCaptureEntity>) {}
+  constructor(
+    @InjectRepository(TemperatureCaptureEntity)
+    private readonly repo: Repository<TemperatureCaptureEntity>
+  ) {}
 
   async save(capture: TemperatureCapture): Promise<void> {
-    await this.repo.save(this.repo.create(toEntity(capture)));
+    const entity = this.repo.create(toEntity(capture));
+    await this.repo.save(entity);
   }
 
   async findLastN(count: number): Promise<TemperatureCapture[]> {
-    const entities = await this.repo.find({ order: { capturedAt: 'DESC' }, take: count });
+    const entities = await this.repo.find({
+      order: { capturedAt: 'DESC' },
+      take: count,
+    });
     return entities.map(toDomain);
   }
 }

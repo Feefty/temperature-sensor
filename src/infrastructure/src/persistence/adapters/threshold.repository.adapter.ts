@@ -8,19 +8,41 @@ import { toDomain } from '../mappers/threshold.persistence-mapper';
 
 @Injectable()
 export class ThresholdRepositoryAdapter implements ThresholdRepositoryPort {
-  constructor(@InjectRepository(ThresholdEntity) private readonly repo: Repository<ThresholdEntity>) {}
+  constructor(
+    @InjectRepository(ThresholdEntity)
+    private readonly repo: Repository<ThresholdEntity>,
+  ) {}
 
-  async getCurrent(): Promise<Threshold> {
-    const entity = await this.repo.findOne({ where: {}, order: { updatedAt: 'DESC' } });
-    return entity ? toDomain(entity) : { id: 'default', coldMax: 22, hotMin: 35, updatedAt: new Date() };
+  async getCurrent(): Promise<Threshold | null> {
+    const entity = await this.findLatest();
+    return toDomain(entity);
   }
 
   async update(coldMax: number, hotMin: number): Promise<Threshold> {
-    const current = await this.repo.findOne({ where: {}, order: { updatedAt: 'DESC' } });
-    if (current) {
-      Object.assign(current, { coldMax, hotMin, updatedAt: new Date() });
-      return toDomain(await this.repo.save(current));
-    }
-    return toDomain(await this.repo.save(this.repo.create({ coldMax, hotMin, updatedAt: new Date() })));
+    const current = await this.findLatest();
+
+    const entity = current
+      ? this.updateExisting(current, coldMax, hotMin)
+      : this.repo.create({ coldMax, hotMin });
+
+    const saved = await this.repo.save(entity);
+    return toDomain(saved)!;
+  }
+
+  private async findLatest(): Promise<ThresholdEntity | null> {
+    return this.repo.findOne({
+      where: {},
+      order: { updatedAt: 'DESC' },
+    });
+  }
+
+  private updateExisting(
+    entity: ThresholdEntity,
+    coldMax: number,
+    hotMin: number,
+  ): ThresholdEntity {
+    entity.coldMax = coldMax;
+    entity.hotMin = hotMin;
+    return entity;
   }
 }

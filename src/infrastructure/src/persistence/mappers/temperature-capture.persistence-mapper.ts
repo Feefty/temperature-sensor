@@ -3,9 +3,19 @@ import { TemperatureState } from '../../../../domain/domain-contract/models/temp
 import { TemperatureCaptureEntity } from '../entities/temperature-capture.entity';
 
 export function toDomain(entity: TemperatureCaptureEntity): TemperatureCapture {
-  return { id: entity.id, value: Number(entity.value), state: entity.state as TemperatureState, capturedAt: entity.capturedAt };
+  return {
+    id: entity.id,
+    value: Number(entity.value),
+    state: entity.state as TemperatureState,
+    capturedAt: entity.capturedAt
+  };
 }
 
 export function toEntity(model: TemperatureCapture): Partial<TemperatureCaptureEntity> {
-  return { id: model.id, value: model.value, state: model.state, capturedAt: model.capturedAt };
+  return {
+    id: model.id,
+    value: model.value,
+    state: model.state,
+    capturedAt: model.capturedAt
+  };
 }
