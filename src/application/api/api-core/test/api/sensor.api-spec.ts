@@ -10,10 +10,10 @@ import { ValidationException } from '../../../../../domain/domain-contract/excep
 
 describe('SensorController - API Error Tests', () => {
 
-  let DOMAIN_EXCEPTION_CODE : string = "DomainException";
-  let VALIDATION_EXCEPTION_CODE : string = 'ValidationException';
-  let SENSOR_CAPTURE_ROUTE : string = '/api/v1/sensors/capture';
-  let SENSOR_HISTORY_ROUTE : string = '/api/v1/sensors/history';
+  const DOMAIN_EXCEPTION_CODE = 'DomainException';
+  const VALIDATION_EXCEPTION_CODE = 'ValidationException';
+  const SENSOR_CAPTURE_ROUTE = '/api/v1/sensors/capture';
+  const SENSOR_HISTORY_ROUTE = '/api/v1/sensors/history';
 
   let app: INestApplication;
   let commandBus: { execute: jest.Mock };
@@ -39,6 +39,7 @@ describe('SensorController - API Error Tests', () => {
   afterAll(async () => { await app.close(); });
   afterEach(() => { jest.resetAllMocks(); });
 
+  //region GET /api/v1/sensors/capture - Error Responses
   describe('GET /api/v1/sensors/capture - Error Responses', () => {
     it('captureTemperature_shouldReturn422_whenDomainExceptionIsThrown', async () => {
       commandBus.execute.mockRejectedValue(new DomainException('Sensor unavailable'));
@@ -51,8 +52,8 @@ describe('SensorController - API Error Tests', () => {
         code: DOMAIN_EXCEPTION_CODE,
         message: 'Sensor unavailable',
         path: SENSOR_CAPTURE_ROUTE,
+        timestamp: expect.any(String),
       });
-      expect(res.body.timestamp).toBeDefined();
     });
 
     it('captureTemperature_shouldReturn400_whenValidationExceptionIsThrown', async () => {
@@ -77,7 +78,9 @@ describe('SensorController - API Error Tests', () => {
       expect(res.status).toBe(500);
     });
   });
+  //endregion
 
+  //region GET /api/v1/sensors/history - Error Responses
   describe('GET /api/v1/sensors/history - Error Responses', () => {
     it('getTemperatureHistory_shouldReturn422_whenDomainExceptionIsThrown', async () => {
       queryBus.execute.mockRejectedValue(new DomainException('Repository connection lost'));
@@ -115,4 +118,5 @@ describe('SensorController - API Error Tests', () => {
       expect(res.status).toBe(500);
     });
   });
+  //endregion
 });

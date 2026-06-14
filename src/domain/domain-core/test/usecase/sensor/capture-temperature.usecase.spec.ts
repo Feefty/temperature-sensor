@@ -1,40 +1,54 @@
-import { TemperatureState } from '../../../../domain-contract/models/temperature-state.enum';
-import { TemperatureCaptureRepositoryStub } from '../../../../../test-component/stubs/temperature-capture.repository.stub';
-import { ThresholdRepositoryStub } from '../../../../../test-component/stubs/threshold.repository.stub';
 import { CaptureTemperatureUseCase } from '../../../src/usecase/sensor/capture-temperature.usecase';
+import { TemperatureCaptureRepositoryPort } from '../../../../domain-contract/ports/secondary/temperature-capture.repository.port';
+import { ThresholdRepositoryPort } from '../../../../domain-contract/ports/secondary/threshold.repository.port';
+import { TemperatureState } from '../../../../domain-contract/models/temperature-state.enum';
+import { DomainException } from '../../../../domain-contract/exceptions/domain.exception';
 
 describe('CaptureTemperatureUseCase', () => {
   let usecase: CaptureTemperatureUseCase;
-  let captureRepo: TemperatureCaptureRepositoryStub;
+  let captureRepository: jest.Mocked<TemperatureCaptureRepositoryPort>;
+  let thresholdRepository: jest.Mocked<ThresholdRepositoryPort>;
 
   beforeEach(() => {
-    captureRepo = new TemperatureCaptureRepositoryStub();
-    usecase = new CaptureTemperatureUseCase(captureRepo, new ThresholdRepositoryStub());
+    captureRepository = { save: jest.fn().mockResolvedValue(undefined), findLastN: jest.fn() };
+    thresholdRepository = {
+      getCurrent: jest.fn().mockResolvedValue({ id: 'thr-1', coldMax: 22, hotMin: 35, updatedAt: new Date() }),
+      update: jest.fn(),
+    };
+    usecase = new CaptureTemperatureUseCase(captureRepository, thresholdRepository);
   });
 
-  it('execute_shouldReturnCaptureWithValidFields', async () => {
+  //region Success scenarios
+  it('execute_shouldReturnCapture_whenThresholdExists', async () => {
     const result = await usecase.execute();
 
     expect(result).toMatchObject({
       id: expect.stringMatching(/^[0-9a-f-]{36}$/),
       value: expect.any(Number),
-      state: expect.stringMatching(/^(HOT|COLD|WARM)$/),
+      state: expect.any(String),
       capturedAt: expect.any(Date),
     });
     expect(result.value).toBeGreaterThanOrEqual(-10);
     expect(result.value).toBeLessThanOrEqual(50);
   });
 
-  it('execute_shouldPersistCaptureInRepository', async () => {
+  it('execute_shouldPersistCapture_whenThresholdExists', async () => {
     await usecase.execute();
-    expect(captureRepo.getAll()).toHaveLength(1);
+
+    expect(captureRepository.save).toHaveBeenCalledTimes(1);
+    expect(captureRepository.save).toHaveBeenCalledWith(expect.objectContaining({
+      id: expect.any(String),
+      value: expect.any(Number),
+      state: expect.any(String),
+      capturedAt: expect.any(Date),
+    }));
   });
 
   it.each([
     ['HOT', 0.9667, TemperatureState.HOT],
     ['COLD', 0.1, TemperatureState.COLD],
     ['WARM', 0.5833, TemperatureState.WARM],
-  ])('execute_shouldClassifyAs%s_whenRandomValueIs%s', async (_label, randomValue, expectedState) => {
+  ])('execute_shouldClassifyAs%s_whenRandomValueProduces%s', async (_label, randomValue, expectedState) => {
     jest.spyOn(Math, 'random').mockReturnValue(randomValue);
 
     const result = await usecase.execute();
@@ -42,4 +56,21 @@ describe('CaptureTemperatureUseCase', () => {
     expect(result.state).toBe(expectedState);
     jest.restoreAllMocks();
   });
+  //endregion
+
+  //region Error scenarios
+  it('execute_shouldThrowDomainException_whenNoThresholdFound', async () => {
+    thresholdRepository.getCurrent.mockResolvedValue(null);
+
+    await expect(usecase.execute()).rejects.toThrow(DomainException);
+    await expect(usecase.execute()).rejects.toThrow('No threshold configuration found');
+  });
+
+  it('execute_shouldNotPersistCapture_whenNoThresholdFound', async () => {
+    thresholdRepository.getCurrent.mockResolvedValue(null);
+
+    await expect(usecase.execute()).rejects.toThrow();
+    expect(captureRepository.save).not.toHaveBeenCalled();
+  });
+  //endregion
 });

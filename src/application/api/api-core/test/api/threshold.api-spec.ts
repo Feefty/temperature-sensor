@@ -10,9 +10,9 @@ import { ValidationException } from '../../../../../domain/domain-contract/excep
 
 describe('ThresholdController - API Error Tests', () => {
 
-  let DOMAIN_EXCEPTION_CODE : string = 'DomainException';
-  let VALIDATION_EXCEPTION_CODE : string = 'ValidationException';
-  let THRESHOLD_ROUTE : string = '/api/v1/thresholds';
+  const DOMAIN_EXCEPTION_CODE = 'DomainException';
+  const VALIDATION_EXCEPTION_CODE = 'ValidationException';
+  const THRESHOLD_ROUTE = '/api/v1/thresholds';
 
   let app: INestApplication;
   let commandBus: { execute: jest.Mock };
@@ -38,6 +38,7 @@ describe('ThresholdController - API Error Tests', () => {
   afterAll(async () => { await app.close(); });
   afterEach(() => { jest.resetAllMocks(); });
 
+  //region GET /api/v1/thresholds - Error Responses
   describe('GET /api/v1/thresholds - Error Responses', () => {
     it('getThresholds_shouldReturn422_whenDomainExceptionIsThrown', async () => {
       queryBus.execute.mockRejectedValue(new DomainException('Threshold not initialized'));
@@ -50,8 +51,8 @@ describe('ThresholdController - API Error Tests', () => {
         code: DOMAIN_EXCEPTION_CODE,
         message: 'Threshold not initialized',
         path: THRESHOLD_ROUTE,
+        timestamp: expect.any(String),
       });
-      expect(res.body.timestamp).toBeDefined();
     });
 
     it('getThresholds_shouldReturn500_whenUnexpectedErrorIsThrown', async () => {
@@ -62,8 +63,10 @@ describe('ThresholdController - API Error Tests', () => {
       expect(res.status).toBe(500);
     });
   });
+  //endregion
 
-  describe('PUT /api/v1/thresholds - Error Responses', () => {
+  //region PUT /api/v1/thresholds - Domain Error Responses
+  describe('PUT /api/v1/thresholds - Domain Error Responses', () => {
     it('updateThresholds_shouldReturn422_whenDomainExceptionIsThrown', async () => {
       commandBus.execute.mockRejectedValue(new DomainException('Concurrent modification'));
 
@@ -105,7 +108,11 @@ describe('ThresholdController - API Error Tests', () => {
 
       expect(res.status).toBe(500);
     });
+  });
+  //endregion
 
+  //region PUT /api/v1/thresholds - Validation (Zod) Responses
+  describe('PUT /api/v1/thresholds - Zod Validation Responses', () => {
     it('updateThresholds_shouldReturn400BeforeReachingDomain_whenBodyInvalid', async () => {
       const res = await request(app.getHttpServer())
         .put(THRESHOLD_ROUTE)
@@ -124,4 +131,5 @@ describe('ThresholdController - API Error Tests', () => {
       expect(commandBus.execute).not.toHaveBeenCalled();
     });
   });
+  //endregion
 });

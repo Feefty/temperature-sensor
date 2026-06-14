@@ -1,29 +1,39 @@
-import { TemperatureCaptureRepositoryStub } from '../../../../../test-component/stubs/temperature-capture.repository.stub';
-import { generateCaptures } from '../../../../../test-component/fixtures/temperature-captures.fixture';
 import { GetTemperatureHistoryUseCase } from '../../../src/usecase/sensor/get-temperature-history.usecase';
+import { TemperatureCaptureRepositoryPort } from '../../../../domain-contract/ports/secondary/temperature-capture.repository.port';
+import { TemperatureCapture } from '../../../../domain-contract/models/temperature-capture.model';
+import { TemperatureState } from '../../../../domain-contract/models/temperature-state.enum';
 
 describe('GetTemperatureHistoryUseCase', () => {
   let usecase: GetTemperatureHistoryUseCase;
-  let captureRepo: TemperatureCaptureRepositoryStub;
+  let captureRepository: jest.Mocked<TemperatureCaptureRepositoryPort>;
 
   beforeEach(() => {
-    captureRepo = new TemperatureCaptureRepositoryStub();
-    usecase = new GetTemperatureHistoryUseCase(captureRepo);
+    captureRepository = { save: jest.fn(), findLastN: jest.fn().mockResolvedValue([]) };
+    usecase = new GetTemperatureHistoryUseCase(captureRepository);
   });
 
-  it('execute_shouldReturnEmpty_whenNoCaptures', async () => {
-    expect(await usecase.execute()).toEqual([]);
-  });
-
-  it.each([
-    ['fewer than limit', 5, 5],
-    ['exactly at limit', 15, 15],
-    ['more than limit', 20, 15],
-  ])('execute_shouldReturnCorrectCount_when%sCaptures', async (_label, insertCount, expectedCount) => {
-    for (const c of generateCaptures(insertCount)) await captureRepo.save(c);
+  //region Success scenarios
+  it('execute_shouldReturnEmptyArray_whenNoCapturesExist', async () => {
+    captureRepository.findLastN.mockResolvedValue([]);
 
     const result = await usecase.execute();
 
-    expect(result).toHaveLength(expectedCount);
+    expect(result).toEqual([]);
+    expect(captureRepository.findLastN).toHaveBeenCalledWith(15);
   });
+
+  it('execute_shouldReturnCaptures_whenCapturesExist', async () => {
+    const captures: TemperatureCapture[] = [
+      { id: '1', value: 25, state: TemperatureState.WARM, capturedAt: new Date() },
+      { id: '2', value: 38, state: TemperatureState.HOT, capturedAt: new Date() },
+    ];
+    captureRepository.findLastN.mockResolvedValue(captures);
+
+    const result = await usecase.execute();
+
+    expect(result).toHaveLength(2);
+    expect(result).toEqual(captures);
+    expect(captureRepository.findLastN).toHaveBeenCalledWith(15);
+  });
+  //endregion
 });

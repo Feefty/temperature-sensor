@@ -3,7 +3,7 @@ import { startTestDatabase, stopTestDatabase, getDataSource } from '../setup/tes
 import { ThresholdRepositoryAdapter } from '../../src/persistence/adapters/threshold.repository.adapter';
 import { ThresholdEntity } from '../../src/persistence/entities/threshold.entity';
 
-describe('ThresholdRepositoryAdapter (integration)', () => {
+describe('ThresholdRepositoryAdapter', () => {
   let adapter: ThresholdRepositoryAdapter;
   let repo: Repository<ThresholdEntity>;
 
@@ -13,29 +13,36 @@ describe('ThresholdRepositoryAdapter (integration)', () => {
     adapter = new ThresholdRepositoryAdapter(repo);
   }, 60000);
 
-  afterAll(async () => {
-    await stopTestDatabase();
-  });
+  afterAll(async () => { await stopTestDatabase(); });
 
-  it('should_get_current_thresholds_from_seed', async () => {
+  //region getCurrent
+  it('getCurrent_shouldReturnSeededThreshold_whenDatabaseIsSeeded', async () => {
     const result = await adapter.getCurrent();
 
-    expect(result!.coldMax).toBe(22);
-    expect(result!.hotMin).toBe(35);
+    expect(result).toMatchObject({ coldMax: 22, hotMin: 35 });
   });
 
-  it('should_update_thresholds', async () => {
+  it('getCurrent_shouldReturnNull_whenNoThresholdExists', async () => {
+    await repo.clear();
+
+    const result = await adapter.getCurrent();
+
+    expect(result).toBeNull();
+  });
+  //endregion
+
+  //region update
+  it('update_shouldReturnUpdatedValues_whenValidInput', async () => {
     const result = await adapter.update(18, 30);
 
-    expect(result!.coldMax).toBe(18);
-    expect(result!.hotMin).toBe(30);
+    expect(result).toMatchObject({ coldMax: 18, hotMin: 30 });
   });
 
-  it('should_persist_updated_thresholds', async () => {
+  it('update_shouldPersistValues_whenUpdated', async () => {
     await adapter.update(15, 40);
-    const result = await adapter.getCurrent();
 
-    expect(result!.coldMax).toBe(15);
-    expect(result!.hotMin).toBe(40);
+    const result = await adapter.getCurrent();
+    expect(result).toMatchObject({ coldMax: 15, hotMin: 40 });
   });
+  //endregion
 });

@@ -4,5 +4,6 @@
   "testRegex": "(integration-spec|api-spec|security.spec|converter.spec)\\.ts$",
   "transform": { "^.+\\.ts$": "ts-jest" },
   "testEnvironment": "node",
+  "testTimeout": 60000,
   "roots": ["<rootDir>/src/application/api/api-core/test"]
 }

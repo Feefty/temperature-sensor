@@ -20,25 +20,23 @@ describe('ValidationExceptionConverter', () => {
     } as unknown as ArgumentsHost;
   });
 
-  it('catch_shouldReturn400WithCorrectBody', () => {
-    const exception = new ValidationException('coldMax must be less than hotMin');
-
-    converter.catch(exception, mockHost);
+  //region Conversion scenarios
+  it('catch_shouldReturnStatus400_whenValidationExceptionIsThrown', () => {
+    converter.catch(new ValidationException('coldMax must be less than hotMin'), mockHost);
 
     expect(mockStatus).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
+  });
+
+  it('catch_shouldReturnCorrectBody_whenValidationExceptionIsThrown', () => {
+    converter.catch(new ValidationException('coldMax must be less than hotMin'), mockHost);
+
     expect(mockJson).toHaveBeenCalledWith(expect.objectContaining({
       statusCode: 400,
       code: 'ValidationException',
       message: 'coldMax must be less than hotMin',
       path: '/api/v1/thresholds',
-    }));
-  });
-
-  it('catch_shouldIncludeTimestamp', () => {
-    converter.catch(new ValidationException('invalid'), mockHost);
-
-    expect(mockJson).toHaveBeenCalledWith(expect.objectContaining({
       timestamp: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/),
     }));
   });
+  //endregion
 });

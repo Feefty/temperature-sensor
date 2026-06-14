@@ -20,10 +20,9 @@ describe('DomainExceptionConverter', () => {
     } as unknown as ArgumentsHost;
   });
 
-  it('catch_shouldReturn422WithCorrectBody', () => {
-    const exception = new DomainException('Something went wrong');
-
-    converter.catch(exception, mockHost);
+  //region Conversion scenarios
+  it('catch_shouldReturnStatus422_whenDomainExceptionIsThrown', () => {
+    converter.catch(new DomainException('Something went wrong'), mockHost);
 
     expect(mockStatus).toHaveBeenCalledWith(HttpStatus.UNPROCESSABLE_ENTITY);
     expect(mockJson).toHaveBeenCalledWith(expect.objectContaining({
@@ -31,14 +30,8 @@ describe('DomainExceptionConverter', () => {
       code: 'DomainException',
       message: 'Something went wrong',
       path: '/api/v1/test',
-    }));
-  });
-
-  it('catch_shouldIncludeTimestamp', () => {
-    converter.catch(new DomainException('error'), mockHost);
-
-    expect(mockJson).toHaveBeenCalledWith(expect.objectContaining({
       timestamp: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/),
     }));
   });
+  //endregion
 });
