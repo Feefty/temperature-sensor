@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { ApiCoreModule } from './application/api/api-core/src/api-core.module';
+import { ApiCoreModule } from './application/api/api-core.module';
 import appConfig from './infrastructure/src/configuration/app.config';
 import databaseConfig from './infrastructure/src/configuration/database.config';
 

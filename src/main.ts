@@ -19,7 +19,7 @@ async function bootstrap() {
   app.useGlobalFilters(new DomainExceptionConverter(), new ValidationExceptionConverter());
   app.useGlobalInterceptors(new LoggingInterceptor());
 
-  // Serve OpenAPI spec
+  // Serve openapi spec
   const openapiPath = path.resolve(
     __dirname, '..', 'src', 'application', 'api', 'api-contract', 'openapi.yaml'
   );
@@ -28,7 +28,7 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  logger.log(`Application running on port ${port}`);
+  logger.log(`Temperature sensor running on port ${port}`);
   logger.log(`Swagger UI at http://localhost:${port}/api-docs`);
 }
 
