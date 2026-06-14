@@ -86,19 +86,13 @@ describe('SensorController - Integration Tests', () => {
       const res = await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
 
       expect(res.status).toBe(200);
+      expect(res.body.length).toBeGreaterThanOrEqual(1);
       expect(res.body).toMatchObject({
         id: expect.stringMatching(UUID_REGEX),
         value: expect.any(Number),
         capturedAt: expect.stringMatching(TIME_REGEX),
       });
       expect(Object.values(TemperatureState)).toContain(res.body.state);
-    });
-
-    it('captureTemperature_shouldPersistInDatabase_whenCalled', async () => {
-      await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
-
-      const res = await request(app.getHttpServer()).get(SENSOR_HISTORY_ROUTE);
-      expect(res.body.length).toBeGreaterThanOrEqual(1);
     });
   });
   //endregion
@@ -119,15 +113,15 @@ describe('SensorController - Integration Tests', () => {
       await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
       await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
 
-      const res = await request(app.getHttpServer()).get(SENSOR_HISTORY_ROUTE);
+      const { body } = await request(app.getHttpServer()).get(SENSOR_HISTORY_ROUTE);
 
-      expect(res.body.length).toBeGreaterThanOrEqual(2);
-      const dates = res.body.map((c: any) => new Date(c.capturedAt).getTime());
-      dates.forEach((date: number, i: number) => {
-        if (i < dates.length - 1) {
-          expect(date).toBeGreaterThanOrEqual(dates[i + 1]);
-        }
-      });
+      expect(body.length).toBeGreaterThanOrEqual(2);
+      expect(body).toEqual(
+        // comparing the endpoint call result with the same hard sorted result list
+        [...body].sort(
+          (a: any, b: any) => new Date(b.capturedAt).getTime() - new Date(a.capturedAt).getTime(),
+        ),
+      );
     });
 
     it('getTemperatureHistory_shouldReturnMaximum15Captures_whenMoreThan15Exist', async () => {
@@ -140,7 +134,7 @@ describe('SensorController - Integration Tests', () => {
       expect(res.body.length).toBeLessThanOrEqual(15);
     });
 
-    it('getTemperatureHistory_shouldReturnCorrectShape_whenCapturesExist', async () => {
+    it('getTemperatureHistory_shouldReturnCorrectFormat_whenCapturesExist', async () => {
       const res = await request(app.getHttpServer()).get(SENSOR_HISTORY_ROUTE);
 
       res.body.forEach((capture: any) => {

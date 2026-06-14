@@ -112,7 +112,7 @@ describe('ThresholdController - API Error Tests', () => {
   //endregion
 
   //region PUT /api/v1/thresholds - Validation (Zod) Responses
-  describe('PUT /api/v1/thresholds - Zod Validation Responses', () => {
+  describe('PUT /api/v1/thresholds - Zod Deserialization', () => {
     it('updateThresholds_shouldReturn400BeforeReachingDomain_whenBodyInvalid', async () => {
       const res = await request(app.getHttpServer())
         .put(THRESHOLD_ROUTE)

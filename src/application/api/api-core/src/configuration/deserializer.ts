@@ -1,8 +1,8 @@
 import { PipeTransform, BadRequestException } from '@nestjs/common';
 import { ZodSchema } from 'zod';
 
-// Zod génère un schema de validation runtime de notre objet openapi
-export class ZodValidationPipe implements PipeTransform {
+// Zod génère un schema de validation runtime de notre objet openAPI
+export class Deserializer implements PipeTransform {
   constructor(private readonly schema: ZodSchema) {}
 
   transform(value: unknown) {

@@ -21,15 +21,10 @@ describe('ValidationExceptionConverter', () => {
   });
 
   //region Conversion scenarios
-  it('catch_shouldReturnStatus400_whenValidationExceptionIsThrown', () => {
-    converter.catch(new ValidationException('coldMax must be less than hotMin'), mockHost);
-
-    expect(mockStatus).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-  });
-
   it('catch_shouldReturnCorrectBody_whenValidationExceptionIsThrown', () => {
     converter.catch(new ValidationException('coldMax must be less than hotMin'), mockHost);
 
+    expect(mockStatus).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
     expect(mockJson).toHaveBeenCalledWith(expect.objectContaining({
       statusCode: 400,
       code: 'ValidationException',

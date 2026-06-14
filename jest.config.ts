@@ -22,7 +22,7 @@ const config: Config = {
     '!src/**/*.module.ts',
     '!src/**/controllers/**',
     '!src/**/interceptors/**',
-    '!src/**/validation/zod-validation.pipe.ts',
+    '!src/**/configuration/deserializer.ts',
     '!src/infrastructure/**',
     '!src/**/configuration/**',
   ],

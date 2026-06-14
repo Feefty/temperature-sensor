@@ -4,7 +4,7 @@ import { GetThresholdsQuery } from '../../../../../domain/domain-contract/comman
 import { UpdateThresholdsAction } from '../../../../../domain/domain-contract/command/action/threshold/update-thresholds.action';
 import { Threshold } from '../../../../../domain/domain-contract/models/threshold.model';
 import { toThresholdResponse } from '../mappers/threshold.mapper';
-import { ZodValidationPipe } from '../openapi/validation/zod-validation.pipe';
+import { Deserializer } from '../configuration/deserializer';
 import { zUpdateThresholdsRequest } from '../../../api-contract/generated/zod.gen';
 import type { ThresholdsControllerMethods } from '../../../api-contract/generated/nestjs.gen';
 import type { ThresholdsResponse, UpdateThresholdsRequest, UpdateThresholdsResponse } from '../../../api-contract/generated/types.gen';
@@ -34,11 +34,11 @@ export class ThresholdController implements ThresholdsControllerMethods {
   /*
       Mandatory validation, i used zod library so i don't create a custom
       UpdateThresholdsRequestValidator class that fails whenever the
-      openapi UpdateThresholdsRequest object changes its contract
+      openAPI UpdateThresholdsRequest object changes its contract
   */
 
   @Put()
-  @UsePipes(new ZodValidationPipe(zUpdateThresholdsRequest))
+  @UsePipes(new Deserializer(zUpdateThresholdsRequest))
   async updateThresholds(@Body() body: UpdateThresholdsRequest): Promise<UpdateThresholdsResponse> {
     const result: Threshold = await this.commandBus.execute(
       new UpdateThresholdsAction(body.coldMax, body.hotMin),

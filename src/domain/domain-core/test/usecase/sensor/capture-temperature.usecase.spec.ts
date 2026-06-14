@@ -36,6 +36,7 @@ describe('CaptureTemperatureUseCase', () => {
     await usecase.execute();
 
     expect(captureRepository.save).toHaveBeenCalledTimes(1);
+    expect(thresholdRepository.getCurrent).toHaveBeenCalledTimes(1);
     expect(captureRepository.save).toHaveBeenCalledWith(expect.objectContaining({
       id: expect.any(String),
       value: expect.any(Number),
@@ -64,13 +65,7 @@ describe('CaptureTemperatureUseCase', () => {
 
     await expect(usecase.execute()).rejects.toThrow(DomainException);
     await expect(usecase.execute()).rejects.toThrow('No threshold configuration found');
-  });
-
-  it('execute_shouldNotPersistCapture_whenNoThresholdFound', async () => {
-    thresholdRepository.getCurrent.mockResolvedValue(null);
-
-    await expect(usecase.execute()).rejects.toThrow();
-    expect(captureRepository.save).not.toHaveBeenCalled();
+    expect(captureRepository.save).toHaveBeenCalledTimes(0);
   });
   //endregion
 });
