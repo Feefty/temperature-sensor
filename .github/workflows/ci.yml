@@ -97,8 +97,7 @@ jobs:
 
   tag:
     runs-on: ubuntu-latest
-    needs: [docker-build]
-    # if: github.ref == 'refs/heads/main'
+    needs: [lint, test-domain, test-api, test-infra, test-integration]
     permissions:
       contents: write
     steps:
