@@ -1,0 +1,201 @@
+openapi: 3.0.3
+info:
+  title: Temperature Sensor API
+  description: ICHOU version of the Temperature Sensor Management REST API that respects the Hexagonal Architecture
+  version: 1.0.0
+  contact:
+    name: Feefty Engineering
+
+servers:
+  - url: http://localhost:3000
+    description: Local Development
+
+tags:
+  - name: Sensors
+    description: Temperature capture operations
+  - name: Thresholds
+    description: Threshold configuration operations
+
+paths:
+  /api/v1/sensors/capture:
+    get:
+      operationId: captureTemperature
+      tags: [Sensors]
+      summary: Capture current temperature from sensor
+      description: Generates a random temperature reading, classifies it based on current thresholds, and stores it in history.
+      responses:
+        '200':
+          description: Temperature captured successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemperatureCaptureResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/sensors/history:
+    get:
+      operationId: temperatureHistory
+      tags: [Sensors]
+      summary: Get temperature history
+      description: Returns the last 15 temperature captures ordered by most recent first.
+      responses:
+        '200':
+          description: Temperature history retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TemperatureCaptureResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/thresholds:
+    get:
+      operationId: thresholds
+      tags: [Thresholds]
+      summary: Get current thresholds
+      description: Returns the current temperature classification thresholds.
+      responses:
+        '200':
+          description: Thresholds retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThresholdResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      operationId: updateThresholds
+      tags: [Thresholds]
+      summary: Update thresholds
+      description: Updates the cold and hot temperature thresholds. coldMax must be less than hotMin. Both values must be between -50 and 60.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateThresholdsRequest'
+      responses:
+        '200':
+          description: Thresholds updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThresholdResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    TemperatureState:
+      type: string
+      enum: [HOT, COLD, WARM]
+      description: Temperature classification state
+
+    TemperatureCaptureResponse:
+      type: object
+      required: [id, value, state, capturedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '550e8400-e29b-41d4-a716-446655440000'
+        value:
+          type: number
+          format: double
+          example: 23.45
+          description: Temperature value in degrees Celsius
+        state:
+          $ref: '#/components/schemas/TemperatureState'
+        capturedAt:
+          type: string
+          format: date-time
+          example: '2026-06-13T12:00:00.000Z'
+          description: Timestamp of the capture
+
+    ThresholdResponse:
+      type: object
+      required: [id, coldMax, hotMin, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '550e8400-e29b-41d4-a716-446655440001'
+        coldMax:
+          type: number
+          format: double
+          example: 22.0
+          description: Temperature below this value is classified as COLD
+        hotMin:
+          type: number
+          format: double
+          example: 35.0
+          description: Temperature at or above this value is classified as HOT
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2026-06-13T12:00:00.000Z'
+
+    UpdateThresholdsRequest:
+      type: object
+      required: [coldMax, hotMin]
+      properties:
+        coldMax:
+          type: number
+          format: double
+          minimum: -50
+          maximum: 60
+          example: 20.0
+          description: The maximum possible value for a temperature to be considered as cold
+        hotMin:
+          type: number
+          format: double
+          minimum: -50
+          maximum: 60
+          example: 33.0
+          description: The minimum possible value for a temperature to be considered as hot
+
+    ErrorResponse:
+      type: object
+      required: [statusCode, code, message, timestamp, path]
+      properties:
+        statusCode:
+          type: integer
+          example: 400
+        code:
+          type: string
+          example: ValidationException
+        message:
+          type: string
+          example: 'coldMax (35) must be less than hotMin (20)'
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+          example: /api/v1/thresholds
