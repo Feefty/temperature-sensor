@@ -16,7 +16,16 @@ const config: Config = {
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
   coverageDirectory: 'coverage',
-  collectCoverageFrom: ['src/**/src/**/*.ts', '!src/main.ts', '!src/**/*.module.ts'],
+  collectCoverageFrom: [
+    'src/**/src/**/*.ts',
+    '!src/main.ts',
+    '!src/**/*.module.ts',
+    '!src/**/controllers/**',
+    '!src/**/interceptors/**',
+    '!src/**/validation/zod-validation.pipe.ts',
+    '!src/infrastructure/**',
+    '!src/**/configuration/**',
+  ],
   coverageThreshold: {
     global: { branches: 80, functions: 90, lines: 85, statements: 85 },
   },

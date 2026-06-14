@@ -396,3 +396,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# NestJS / Node.js
+dist/
+src/application/api/api-contract/generated/
+coverage/
+*.js.map
