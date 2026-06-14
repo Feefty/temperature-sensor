@@ -10,13 +10,15 @@ I first reviewed the original brief and expanded it into [SPEC.md](SPEC.md), mak
 
 Codex was used to accelerate the implementation work one plan step at a time. After each step, I reviewed the code and tests, questioned design choices, and requested adjustments before committing. In this workflow, AI handled much of the mechanical coding, while I owned the specification, architecture decisions, orchestration, and final validation. This kept AI assistance fast but controlled and reviewable.
 
-## Requirements
+## Run and Validate
+
+### Requirements
 
 - Node.js 22
 - Yarn 1.22.22
 - Docker with Compose, for the containerized workflow
 
-## Local Setup
+### Local Development
 
 ```bash
 nvm use
@@ -38,7 +40,7 @@ PORT=3001 yarn start:dev
 
 The API will then listen on `http://localhost:3001`.
 
-## Sensor Configuration
+### Sensor Configuration
 
 No physical sensor integration is provided by the exercise. The included adapter simulates an external temperature sensor:
 
@@ -54,9 +56,52 @@ TEMPERATURE_SENSOR_FIXED_VALUE=30 yarn start:dev
 
 The sensor is behind an application port, so a real hardware or service adapter can replace it without changing the domain or use cases.
 
-## API
+### Tests
+
+```bash
+yarn test
+yarn test:e2e
+```
+
+The test suite covers domain rules, functional use cases, infrastructure adapters, HTTP validation, and complete API workflows.
+
+### Build
+
+Compile the TypeScript application and generate the production-ready output in `dist`:
+
+```bash
+yarn build
+```
+
+### Production Build with Docker
+
+Build and run the production container:
+
+```bash
+docker compose up --build
+```
+
+Compose exposes port `3000` and uses a deterministic sensor value of `21.5` by default. Both settings are configurable:
+
+```bash
+HOST_PORT=3001 TEMPERATURE_SENSOR_FIXED_VALUE=30 docker compose up --build
+```
+
+Stop the service with:
+
+```bash
+docker compose down
+```
+
+### CI
+
+GitHub Actions runs on pull requests and pushes to `develop`. It installs from the committed lockfile, builds first, then runs the regular and end-to-end test suites.
+
+## API Usage
 
 Default thresholds are `22` for COLD and `35` for HOT. WARM is the range from the cold threshold, inclusive, to the hot threshold, exclusive. Thresholds must remain at least two degrees apart.
+
+### Capture a Temperature
 
 Capture and store the current temperature:
 
@@ -78,6 +123,8 @@ Example response:
   "capturedAt": "2026-06-13T10:00:00.000Z"
 }
 ```
+
+### Read Temperature History
 
 Read the latest 15 captures, newest first:
 
@@ -106,6 +153,8 @@ Example response:
 }
 ```
 
+### Read Thresholds
+
 Read the active thresholds:
 
 ```bash
@@ -120,6 +169,8 @@ Example response:
   "hotThreshold": 35
 }
 ```
+
+### Update Thresholds
 
 Partially update the thresholds:
 
@@ -140,44 +191,9 @@ Example response:
 
 Each history entry stores the thresholds used when it was captured. Updating the active configuration does not rewrite previous classifications.
 
-## Test
+## Design
 
-```bash
-yarn test
-yarn test:e2e
-```
-
-The test suite covers domain rules, functional use cases, infrastructure adapters, HTTP validation, and complete API workflows.
-
-## Build
-
-Compile the TypeScript application and generate the production-ready output in `dist`:
-
-```bash
-yarn build
-```
-
-## Docker
-
-Build and run the service:
-
-```bash
-docker compose up --build
-```
-
-Compose exposes port `3000` and uses a deterministic sensor value of `21.5` by default. Both settings are configurable:
-
-```bash
-HOST_PORT=3001 TEMPERATURE_SENSOR_FIXED_VALUE=30 docker compose up --build
-```
-
-Stop the service with:
-
-```bash
-docker compose down
-```
-
-## Architecture
+### Architecture
 
 The project follows a small hexagonal architecture:
 
@@ -200,20 +216,11 @@ HTTP controllers -> application facade -> functional use cases -> domain
 
 Persistence is intentionally in memory. Restarting the process resets both history and active thresholds.
 
-## Possible Improvements
+### Possible Improvements
 
 Given the roughly three hours I dedicated to this exercise, I kept the implementation focused on the core requirements. With more time, I would consider the following improvements:
 
 - Add a small web interface for capturing readings, viewing history, and updating thresholds without calling the API directly.
-- Replace the simulated sensor with an adapter for real hardware or an external sensor service.
 - Add durable database persistence so history and threshold configuration survive restarts and can support multiple application instances.
 - Publish an OpenAPI/Swagger specification with interactive endpoint documentation.
 - Make the service easier to operate by adding logs, basic performance monitoring, and early checks for invalid configuration.
-
-## CI
-
-GitHub Actions runs on pull requests and pushes to `develop`. It installs from the committed lockfile, builds first, then runs the regular and end-to-end test suites.
-
-## Delivery
-
-Changes are intended for a pull request targeting the `develop` branch.
