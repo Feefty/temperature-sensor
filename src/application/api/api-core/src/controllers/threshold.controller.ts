@@ -25,7 +25,9 @@ export class ThresholdController implements ThresholdsControllerMethods {
 
   @Get()
   async thresholds(): Promise<ThresholdsResponse> {
-    const result: Threshold = await this.queryBus.execute(new GetThresholdsQuery());
+    const result: Threshold = await this.queryBus.execute(
+      new GetThresholdsQuery()
+    );
     return toThresholdResponse(result);
   }
 
