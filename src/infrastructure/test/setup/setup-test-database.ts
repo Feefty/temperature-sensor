@@ -54,7 +54,3 @@ export async function stopTestDatabase(): Promise<void> {
   if (dataSource?.isInitialized) await dataSource.destroy();
   if (container) await container.stop();
 }
-
-export function getDataSource(): DataSource {
-  return dataSource;
-}

@@ -1,9 +1,9 @@
 import { Repository } from 'typeorm';
-import { startTestDatabase, stopTestDatabase, getDataSource } from '../setup/test-database';
+import { startTestDatabase, stopTestDatabase } from '../setup/setup-test-database';
 import { ThresholdRepositoryAdapter } from '../../src/persistence/adapters/threshold.repository.adapter';
 import { ThresholdEntity } from '../../src/persistence/entities/threshold.entity';
 
-describe('ThresholdRepositoryAdapter', () => {
+describe('ThresholdRepositoryAdapterTest', () => {
   let adapter: ThresholdRepositoryAdapter;
   let repo: Repository<ThresholdEntity>;
 
@@ -13,13 +13,19 @@ describe('ThresholdRepositoryAdapter', () => {
     adapter = new ThresholdRepositoryAdapter(repo);
   }, 60000);
 
-  afterAll(async () => { await stopTestDatabase(); });
+  afterAll(async () => {
+    await stopTestDatabase();
+  });
 
   //region getCurrent
   it('getCurrent_shouldReturnSeededThreshold_whenDatabaseIsSeeded', async () => {
     const result = await adapter.getCurrent();
 
-    expect(result).toMatchObject({ coldMax: 22, hotMin: 35 });
+    // values from the db resource seeding SQL script
+    expect(result).toMatchObject({
+      coldMax: 22,
+      hotMin: 35
+    });
   });
 
   it('getCurrent_shouldReturnNull_whenNoThresholdExists', async () => {
@@ -35,14 +41,20 @@ describe('ThresholdRepositoryAdapter', () => {
   it('update_shouldReturnUpdatedValues_whenValidInput', async () => {
     const result = await adapter.update(18, 30);
 
-    expect(result).toMatchObject({ coldMax: 18, hotMin: 30 });
+    expect(result).toMatchObject({
+      coldMax: 18,
+      hotMin: 30
+    });
   });
 
   it('update_shouldPersistValues_whenUpdated', async () => {
     await adapter.update(15, 40);
 
     const result = await adapter.getCurrent();
-    expect(result).toMatchObject({ coldMax: 15, hotMin: 40 });
+    expect(result).toMatchObject({
+      coldMax: 15,
+      hotMin: 40
+    });
   });
   //endregion
 });
