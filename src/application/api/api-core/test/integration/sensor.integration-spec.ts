@@ -106,16 +106,15 @@ describe('SensorController - Integration Tests', () => {
   //region GET /api/v1/sensors/capture - Success
   describe('GET /api/v1/sensors/capture - Success', () => {
     it('captureTemperature_shouldReturn200WithValidCapture_whenThresholdExists', async () => {
-      const res = await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
+      const { body, status } = await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
 
-      expect(res.status).toBe(200);
-      expect(res.body.length).toBeGreaterThanOrEqual(1);
-      expect(res.body).toMatchObject({
+      expect(status).toBe(200);
+      expect(body).toMatchObject({
         id: expect.stringMatching(UUID_REGEX),
         value: expect.any(Number),
         capturedAt: expect.stringMatching(TIME_REGEX),
       });
-      expect(Object.values(TemperatureState)).toContain(res.body.state);
+      expect(Object.values(TemperatureState)).toContain(body.state);
     });
   });
   //endregion
