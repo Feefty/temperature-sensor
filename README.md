@@ -140,15 +140,22 @@ Example response:
 
 Each history entry stores the thresholds used when it was captured. Updating the active configuration does not rewrite previous classifications.
 
-## Tests
+## Test
 
 ```bash
 yarn test
 yarn test:e2e
-yarn build
 ```
 
 The test suite covers domain rules, functional use cases, infrastructure adapters, HTTP validation, and complete API workflows.
+
+## Build
+
+Compile the TypeScript application and generate the production-ready output in `dist`:
+
+```bash
+yarn build
+```
 
 ## Docker
 
