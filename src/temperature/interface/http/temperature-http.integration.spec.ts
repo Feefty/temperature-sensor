@@ -142,6 +142,17 @@ describe('Temperature HTTP interface', () => {
     expect(result.status).toBe(400);
   });
 
+  it('rejects a null threshold', async (): Promise<void> => {
+    const result: HttpResult = await sendJsonRequest(
+      baseUrl,
+      '/thresholds',
+      'PATCH',
+      { hotThreshold: null },
+    );
+
+    expect(result.status).toBe(400);
+  });
+
   it('rejects an invalid merged threshold range', async (): Promise<void> => {
     const result: HttpResult = await sendJsonRequest(
       baseUrl,
