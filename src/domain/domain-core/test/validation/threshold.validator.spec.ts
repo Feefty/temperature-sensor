@@ -18,12 +18,9 @@ describe('ThresholdValidator', () => {
     ['coldMax equals hotMin', 30, 30, 'must not equal hotMin'],
     ['coldMax below minimum bound (-50)', -55, 35, 'must be between -50 and 60'],
     ['hotMin above maximum bound (60)', 20, 65, 'must be between -50 and 60'],
-  ])(
-    'should_throwValidationException_when_%s',
-    (_label, coldMax, hotMin, expectedMessage) => {
-      expect(() => validateThresholds(coldMax, hotMin)).toThrow(ValidationException);
-      expect(() => validateThresholds(coldMax, hotMin)).toThrow(expectedMessage);
-    },
-  );
+  ])('should_throwValidationException_when_%s', (_label, coldMax, hotMin, expectedMessage) => {
+    expect(() => validateThresholds(coldMax, hotMin)).toThrow(ValidationException);
+    expect(() => validateThresholds(coldMax, hotMin)).toThrow(expectedMessage);
+  });
   //endregion
 });
