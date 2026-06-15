@@ -1,5 +1,9 @@
 # Kata
 
+## Proposed Solution
+
+- [Documentation](./documentation/ARCHITECTURE.md)
+
 ## **Objectives**
 
 - Demonstrate what you can do within a reasonable time and show how you code in real-life situations.
