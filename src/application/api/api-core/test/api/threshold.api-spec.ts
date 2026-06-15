@@ -43,7 +43,7 @@ describe('ThresholdController - API Error Tests', () => {
 
   //region GET /api/v1/thresholds - Error Responses
   describe('GET /api/v1/thresholds - Error Responses', () => {
-    it('getThresholds_shouldReturn422_whenDomainExceptionIsThrown', async () => {
+    it('getThresholds_should_returnValidExceptionResponse_when_domainExceptionIsThrown', async () => {
       queryBus.execute.mockRejectedValue(new DomainException('Threshold not initialized'));
 
       const res = await request(app.getHttpServer()).get(THRESHOLD_ROUTE);
@@ -58,7 +58,7 @@ describe('ThresholdController - API Error Tests', () => {
       });
     });
 
-    it('getThresholds_shouldReturn500_whenUnexpectedErrorIsThrown', async () => {
+    it('getThresholds_should_returnValidExceptionResponse_when_unexpectedErrorIsThrown', async () => {
       queryBus.execute.mockRejectedValue(new Error('Connection refused'));
 
       const res = await request(app.getHttpServer()).get(THRESHOLD_ROUTE);
@@ -70,7 +70,7 @@ describe('ThresholdController - API Error Tests', () => {
 
   //region PUT /api/v1/thresholds - Domain Error Responses
   describe('PUT /api/v1/thresholds - Domain Error Responses', () => {
-    it('updateThresholds_shouldReturn422_whenDomainExceptionIsThrown', async () => {
+    it('updateThresholds_should_returnValidExceptionResponse_when_domainExceptionIsThrown', async () => {
       commandBus.execute.mockRejectedValue(new DomainException('Concurrent modification'));
 
       const res = await request(app.getHttpServer())
@@ -86,7 +86,7 @@ describe('ThresholdController - API Error Tests', () => {
       });
     });
 
-    it('updateThresholds_shouldReturn400_whenValidationExceptionIsThrown', async () => {
+    it('updateThresholds_should_returnValidExceptionResponse_when_validationExceptionIsThrown', async () => {
       commandBus.execute.mockRejectedValue(
         new ValidationException('coldMax must be less than hotMin'),
       );
@@ -104,7 +104,7 @@ describe('ThresholdController - API Error Tests', () => {
       });
     });
 
-    it('updateThresholds_shouldReturn500_whenUnexpectedErrorIsThrown', async () => {
+    it('updateThresholds_should_returnValidExceptionResponse_when_unexpectedErrorIsThrown', async () => {
       commandBus.execute.mockRejectedValue(new Error('Transaction rollback'));
 
       const res = await request(app.getHttpServer())
@@ -118,7 +118,7 @@ describe('ThresholdController - API Error Tests', () => {
 
   //region PUT /api/v1/thresholds - Validation (Zod) Responses
   describe('PUT /api/v1/thresholds - Zod Deserialization', () => {
-    it('updateThresholds_shouldReturn400BeforeReachingDomain_whenBodyInvalid', async () => {
+    it('updateThresholds_should_returnValidExceptionResponseBeforeReachingDomain_when_bodyInvalid', async () => {
       const res = await request(app.getHttpServer())
         .put(THRESHOLD_ROUTE)
         .send({ coldMax: 'not-a-number', hotMin: 35 });
@@ -127,7 +127,7 @@ describe('ThresholdController - API Error Tests', () => {
       expect(commandBus.execute).not.toHaveBeenCalled();
     });
 
-    it('updateThresholds_shouldReturn400BeforeReachingDomain_whenBodyEmpty', async () => {
+    it('updateThresholds_should_returnValidExceptionResponseBeforeReachingDomain_when_bodyEmpty', async () => {
       const res = await request(app.getHttpServer()).put(THRESHOLD_ROUTE).send({});
 
       expect(res.status).toBe(400);

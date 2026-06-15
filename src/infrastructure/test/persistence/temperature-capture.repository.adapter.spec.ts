@@ -23,7 +23,7 @@ describe('TemperatureCaptureRepositoryAdapterTest', () => {
   });
 
   //region save
-  it('save_shouldPersistCapture_whenValidCaptureProvided', async () => {
+  it('save_should_persistCapture_when_validCaptureProvided', async () => {
     await adapter.save({
       id: uuidv4(),
       value: 25.5,
@@ -38,7 +38,7 @@ describe('TemperatureCaptureRepositoryAdapterTest', () => {
   //endregion
 
   //region findLastN
-  it('findLastN_shouldReturnOrderedByDateDesc_whenMultipleCapturesExist', async () => {
+  it('findLastN_should_returnOrderedByDateDesc_when_multipleCapturesExist', async () => {
     for (let i = 0; i < 5; i++) {
       await adapter.save({
         id: uuidv4(),
@@ -56,7 +56,7 @@ describe('TemperatureCaptureRepositoryAdapterTest', () => {
     expect(results[2].value).toBe(22);
   });
 
-  it('findLastN_shouldRespectMaxCount_whenMoreCapturesThanLimit', async () => {
+  it('findLastN_should_respectMaxCount_when_moreCapturesThanLimit', async () => {
     for (let i = 0; i < 20; i++) {
       await adapter.save({
         id: uuidv4(),
@@ -70,7 +70,7 @@ describe('TemperatureCaptureRepositoryAdapterTest', () => {
     expect(results).toHaveLength(15);
   });
 
-  it('findLastN_shouldReturnEmpty_whenNoCapturesExist', async () => {
+  it('findLastN_should_returnEmpty_when_noCapturesExist', async () => {
     const results = await adapter.findLastN(10);
     expect(results).toEqual([]);
   });

@@ -18,7 +18,7 @@ describe('ThresholdRepositoryAdapterTest', () => {
   });
 
   //region getCurrent
-  it('getCurrent_shouldReturnSeededThreshold_whenDatabaseIsSeeded', async () => {
+  it('getCurrent_should_returnSeededThreshold_when_databaseIsSeeded', async () => {
     const result = await adapter.getCurrent();
 
     // values from the db resource seeding SQL script
@@ -28,7 +28,7 @@ describe('ThresholdRepositoryAdapterTest', () => {
     });
   });
 
-  it('getCurrent_shouldReturnNull_whenNoThresholdExists', async () => {
+  it('getCurrent_should_returnNull_when_noThresholdExists', async () => {
     await repo.clear();
 
     const result = await adapter.getCurrent();
@@ -38,7 +38,7 @@ describe('ThresholdRepositoryAdapterTest', () => {
   //endregion
 
   //region update
-  it('update_shouldReturnUpdatedValues_whenValidInput', async () => {
+  it('update_should_returnUpdatedValues_when_validInput', async () => {
     const result = await adapter.update(18, 30);
 
     expect(result).toMatchObject({
@@ -47,7 +47,7 @@ describe('ThresholdRepositoryAdapterTest', () => {
     });
   });
 
-  it('update_shouldPersistValues_whenUpdated', async () => {
+  it('update_should_persistValues_when_updated', async () => {
     await adapter.update(15, 40);
 
     const result = await adapter.getCurrent();

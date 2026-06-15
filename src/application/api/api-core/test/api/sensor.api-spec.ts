@@ -44,7 +44,7 @@ describe('SensorController - API Error Tests', () => {
 
   //region GET /api/v1/sensors/capture - Error Responses
   describe('GET /api/v1/sensors/capture - Error Responses', () => {
-    it('captureTemperature_shouldReturn422_whenDomainExceptionIsThrown', async () => {
+    it('getCaptureTemperature_should_returnValidExceptionResponse_when_domainExceptionIsThrown', async () => {
       commandBus.execute.mockRejectedValue(new DomainException('Sensor unavailable'));
 
       const res = await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
@@ -59,7 +59,7 @@ describe('SensorController - API Error Tests', () => {
       });
     });
 
-    it('captureTemperature_shouldReturn400_whenValidationExceptionIsThrown', async () => {
+    it('getCaptureTemperature_should_returnValidExceptionResponse_when_validationExceptionIsThrown', async () => {
       commandBus.execute.mockRejectedValue(new ValidationException('Invalid sensor configuration'));
 
       const res = await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
@@ -73,7 +73,7 @@ describe('SensorController - API Error Tests', () => {
       });
     });
 
-    it('captureTemperature_shouldReturn500_whenUnexpectedErrorIsThrown', async () => {
+    it('getCaptureTemperature_should_returnValidExceptionResponse_when_unexpectedErrorIsThrown', async () => {
       commandBus.execute.mockRejectedValue(new Error('Unexpected failure'));
 
       const res = await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
@@ -85,7 +85,7 @@ describe('SensorController - API Error Tests', () => {
 
   //region GET /api/v1/sensors/history - Error Responses
   describe('GET /api/v1/sensors/history - Error Responses', () => {
-    it('getTemperatureHistory_shouldReturn422_whenDomainExceptionIsThrown', async () => {
+    it('getTemperatureHistory_should_returnValidExceptionResponse_when_domainExceptionIsThrown', async () => {
       queryBus.execute.mockRejectedValue(new DomainException('Repository connection lost'));
 
       const res = await request(app.getHttpServer()).get(SENSOR_HISTORY_ROUTE);
@@ -99,7 +99,7 @@ describe('SensorController - API Error Tests', () => {
       });
     });
 
-    it('getTemperatureHistory_shouldReturn400_whenValidationExceptionIsThrown', async () => {
+    it('getTemperatureHistory_should_returnValidExceptionResponse_when_validationExceptionIsThrown', async () => {
       queryBus.execute.mockRejectedValue(new ValidationException('Invalid query parameters'));
 
       const res = await request(app.getHttpServer()).get(SENSOR_HISTORY_ROUTE);
@@ -113,7 +113,7 @@ describe('SensorController - API Error Tests', () => {
       });
     });
 
-    it('getTemperatureHistory_shouldReturn500_whenUnexpectedErrorIsThrown', async () => {
+    it('getTemperatureHistory_should_returnValidExceptionResponse_when_unexpectedErrorIsThrown', async () => {
       queryBus.execute.mockRejectedValue(new Error('Database timeout'));
 
       const res = await request(app.getHttpServer()).get(SENSOR_HISTORY_ROUTE);

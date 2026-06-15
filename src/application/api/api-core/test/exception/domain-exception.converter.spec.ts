@@ -21,7 +21,7 @@ describe('DomainExceptionConverter', () => {
   });
 
   //region Conversion scenarios
-  it('catch_shouldReturnStatus422_whenDomainExceptionIsThrown', () => {
+  it('converter_should_ReturnValidExceptionResponse_when_domainExceptionIsThrown', () => {
     converter.catch(new DomainException('Something went wrong'), mockHost);
 
     expect(mockStatus).toHaveBeenCalledWith(HttpStatus.UNPROCESSABLE_ENTITY);

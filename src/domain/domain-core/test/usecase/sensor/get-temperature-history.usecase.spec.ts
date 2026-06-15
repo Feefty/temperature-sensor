@@ -13,7 +13,7 @@ describe('GetTemperatureHistoryUseCase', () => {
   });
 
   //region Success scenarios
-  it('execute_shouldReturnEmptyArray_whenNoCapturesExist', async () => {
+  it('should_returnEmptyArray_when_noCapturesExist', async () => {
     captureRepository.findLastN.mockResolvedValue([]);
 
     const result = await usecase.execute();
@@ -22,7 +22,7 @@ describe('GetTemperatureHistoryUseCase', () => {
     expect(captureRepository.findLastN).toHaveBeenCalledWith(15);
   });
 
-  it('execute_shouldReturnCaptures_whenCapturesExist', async () => {
+  it('should_returnCaptures_when_capturesExist', async () => {
     const captures: TemperatureCapture[] = [
       { id: '1', value: 25, state: TemperatureState.WARM, capturedAt: new Date() },
       { id: '2', value: 38, state: TemperatureState.HOT, capturedAt: new Date() },

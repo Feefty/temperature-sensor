@@ -105,7 +105,7 @@ describe('SensorController - Integration Tests', () => {
 
   //region GET /api/v1/sensors/capture - Success
   describe('GET /api/v1/sensors/capture - Success', () => {
-    it('captureTemperature_shouldReturn200WithValidCapture_whenThresholdExists', async () => {
+    it('getCaptureTemperature_should_return200WithValidCapture_when_thresholdExists', async () => {
       const { body, status } = await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
 
       expect(status).toBe(200);
@@ -121,7 +121,7 @@ describe('SensorController - Integration Tests', () => {
 
   //region GET /api/v1/sensors/history - Success
   describe('GET /api/v1/sensors/history - Success', () => {
-    it('getTemperatureHistory_shouldReturn200WithArray_whenCapturesExist', async () => {
+    it('getTemperatureHistory_should_return200WithArray_when_capturesExist', async () => {
       await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
 
       const res = await request(app.getHttpServer()).get(SENSOR_HISTORY_ROUTE);
@@ -131,7 +131,7 @@ describe('SensorController - Integration Tests', () => {
       expect(res.body.length).toBeGreaterThanOrEqual(1);
     });
 
-    it('getTemperatureHistory_shouldReturnCapturesOrderedByDateDesc_whenMultipleCapturesExist', async () => {
+    it('getTemperatureHistory_should_returnCapturesOrderedByDateDesc_when_multipleCapturesExist', async () => {
       await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
       await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
 
@@ -146,7 +146,7 @@ describe('SensorController - Integration Tests', () => {
       );
     });
 
-    it('getTemperatureHistory_shouldReturnMaximum15Captures_whenMoreThan15Exist', async () => {
+    it('getTemperatureHistory_should_returnMaximum15Captures_when_moreThan15Exist', async () => {
       for (let i = 0; i < 16; i++) {
         await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);
       }
@@ -156,7 +156,7 @@ describe('SensorController - Integration Tests', () => {
       expect(res.body.length).toBeLessThanOrEqual(15);
     });
 
-    it('getTemperatureHistory_shouldReturnCorrectFormat_whenCapturesExist', async () => {
+    it('getTemperatureHistory_should_returnCorrectFormat_when_capturesExist', async () => {
       const res = await request(app.getHttpServer()).get(SENSOR_HISTORY_ROUTE);
 
       res.body.forEach((capture: any) => {
@@ -173,7 +173,7 @@ describe('SensorController - Integration Tests', () => {
 
   //region GET /api/v1/sensors/capture - Error (no threshold)
   describe('GET /api/v1/sensors/capture - No Threshold', () => {
-    it('captureTemperature_shouldReturn422_whenNoThresholdInDatabase', async () => {
+    it('getCaptureTemperature_should_return422_when_noThresholdInDatabase', async () => {
       await dataSource.query('DELETE FROM thresholds');
 
       const res = await request(app.getHttpServer()).get(SENSOR_CAPTURE_ROUTE);

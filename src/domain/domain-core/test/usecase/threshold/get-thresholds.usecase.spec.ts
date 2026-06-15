@@ -12,7 +12,7 @@ describe('GetThresholdsUseCase', () => {
   });
 
   //region Success scenarios
-  it('execute_shouldReturnThreshold_whenThresholdExists', async () => {
+  it('should_returnThreshold_when_thresholdExists', async () => {
     const threshold = { id: 'thr-1', coldMax: 22, hotMin: 35, updatedAt: new Date() };
     thresholdRepository.getCurrent.mockResolvedValue(threshold);
 
@@ -23,7 +23,7 @@ describe('GetThresholdsUseCase', () => {
   //endregion
 
   //region Error scenarios
-  it('execute_shouldThrowDomainException_whenNoThresholdFound', async () => {
+  it('should_throw_DomainException_when_noThresholdFound', async () => {
     thresholdRepository.getCurrent.mockResolvedValue(null);
 
     await expect(usecase.execute()).rejects.toThrow(DomainException);

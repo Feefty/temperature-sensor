@@ -21,7 +21,7 @@ describe('CaptureTemperatureUseCase', () => {
   });
 
   //region Success scenarios
-  it('execute_shouldReturnCapture_whenThresholdExists', async () => {
+  it('should_returnCapture_when_thresholdExists', async () => {
     const result = await usecase.execute();
 
     expect(result).toMatchObject({
@@ -34,7 +34,7 @@ describe('CaptureTemperatureUseCase', () => {
     expect(result.value).toBeLessThanOrEqual(50);
   });
 
-  it('execute_shouldPersistCapture_whenThresholdExists', async () => {
+  it('should_persistCapture_when_thresholdExists', async () => {
     await usecase.execute();
 
     expect(captureRepository.save).toHaveBeenCalledTimes(1);
@@ -54,7 +54,7 @@ describe('CaptureTemperatureUseCase', () => {
     ['COLD', 0.1, TemperatureState.COLD],
     ['WARM', 0.5833, TemperatureState.WARM],
   ])(
-    'execute_shouldClassifyAs%s_whenRandomValueProduces%s',
+    'should_classifyAs%s_when_randomValueProduces%s',
     async (_label, randomValue, expectedState) => {
       jest.spyOn(Math, 'random').mockReturnValue(randomValue);
 
@@ -67,7 +67,7 @@ describe('CaptureTemperatureUseCase', () => {
   //endregion
 
   //region Error scenarios
-  it('execute_shouldThrowDomainException_whenNoThresholdFound', async () => {
+  it('should_throwDomainException_when_noThresholdFound', async () => {
     thresholdRepository.getCurrent.mockResolvedValue(null);
 
     await expect(usecase.execute()).rejects.toThrow(DomainException);

@@ -2,7 +2,7 @@
 
 ## Proposed Solution
 
-- [Documentation](./documentation/ARCHITECTURE.md)
+- [Documentation](documentation/architecture.md)
 
 ## **Objectives**
 

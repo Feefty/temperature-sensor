@@ -21,7 +21,7 @@ describe('ValidationExceptionConverter', () => {
   });
 
   //region Conversion scenarios
-  it('catch_shouldReturnCorrectBody_whenValidationExceptionIsThrown', () => {
+  it('converter_should_returnCorrectBody_when_validationExceptionIsThrown', () => {
     converter.catch(new ValidationException('coldMax must be less than hotMin'), mockHost);
 
     expect(mockStatus).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);

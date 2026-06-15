@@ -20,7 +20,7 @@ describe('UpdateThresholdsUseCase', () => {
   });
 
   //region Success scenarios
-  it('execute_shouldReturnUpdatedThreshold_whenValuesAreValid', async () => {
+  it('should_returnUpdatedThreshold_when_valuesAreValid', async () => {
     const result = await usecase.execute(new UpdateThresholdsAction(20, 33));
 
     expect(result).toMatchObject({ coldMax: 20, hotMin: 33 });
@@ -34,7 +34,7 @@ describe('UpdateThresholdsUseCase', () => {
     ['coldMax equals hotMin', 30, 30],
     ['coldMax below minimum bound', -60, 30],
     ['hotMin above maximum bound', 20, 65],
-  ])('execute_shouldThrowValidationException_when%s', async (_label, coldMax, hotMin) => {
+  ])('should_throwValidationException_when_%s', async (_label, coldMax, hotMin) => {
     await expect(usecase.execute(new UpdateThresholdsAction(coldMax, hotMin))).rejects.toThrow(
       ValidationException,
     );

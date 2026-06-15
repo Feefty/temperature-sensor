@@ -512,12 +512,12 @@ to find the bug and fix it.
 
 Following harvest-connect pattern:
 ```
-methodUnderTest_shouldExpectedBehavior_whenCondition
+methodUnderTest_should_rxpectedBehavior_when_condition
 ```
 
 Examples:
 ```typescript
-'getThresholds_shouldReturn500_whenUnexpectedErrorIsThrown'
+'getTemperatureHistory_should_return200WithArray_when_capturesExist'
 ```
 
 ### Regions
@@ -603,33 +603,72 @@ Types [ feat, fix, test, ci, docs, chore, refactor]
 
 ### Build & Run
 
-| Command | Description |
-|---------|-------------|
-| `npm run build` | Clean + generate OpenAPI types + compile TypeScript |
-| `npm run start` | Build then run (`node dist/main`) |
-| `npm run start:dev` | Watch mode (hot reload) |
-| `npm run generate` | Generate types/zod/nestjs from OpenAPI YAML |
-| `npm run clean` | Remove `dist/` and `generated/` |
+Clean + generate OpenAPI types + compile TypeScript
+```shell
+npm run build
+```
+Build then run (`node dist/main`)
+```shell
+npm run start
+```
+Watch mode (hot reload)
+```shell
+npm run start:dev
+```
+Generate types/zod/nestjs from OpenAPI YAML
+```shell
+npm run generate
+```
+Remove `dist/` and `generated/`
+```shell
+npm run clean
+```
 
 ### Test
 
-| Command | Description                                                  |
-|---------|--------------------------------------------------------------|
-| `npm test` | Unit tests (domain + converters)                             |
-| `npm run test:domain` | Domain unit tests only                                       |
-| `npm run test:api` | API tests (error + integration + exception)                  |
-| `npm run test:integration` | Integration tests only (needs Docker)                        |
-| `npm run test:infra` | Infrastructure adapter tests (needs Docker)                  |
-| `npm run test:all` | Unit + API tests                                             |
-| `npm run test:cov` | Unit tests with coverage report inside `root/converage folder` |
+Unit + API tests
+```shell
+npm run test:all	
+```
+API tests (error + integration + exception)
+```shell
+npm run test:api	
+```
+Domain unit tests only
+```shell
+npm run test:domain
+```
+Domain + exception converters tests
+```shell
+npm test
+```
+Integration tests only (needs Docker)
+```shell
+npm run test:integration	
+```
+Infrastructure adapter tests (needs Docker)
+```shell
+npm run test:infra
+```
+Unit tests with coverage report inside root/converage folder
+```shell
+npm run test:cov	
+```
 
 ### Docker
 
-| Command | Description |
-|---------|-------------|
-| `docker compose up -d postgres` | Start PostgreSQL only |
-| `docker compose up` | Start app + PostgreSQL |
-| `docker compose down -v` | Stop all + remove volumes (reset DB) |
+Start PostgreSQL only
+```shell
+docker compose up -d postgres
+```
+Start app + PostgreSQL
+```shell
+docker compose up
+```
+Stop all + remove volumes (reset DB)
+```shell
+docker compose down -v
+```
 
 ---
 
@@ -805,6 +844,7 @@ Testing with `Bruno` in local:
 
 ![API Responses](./screenshots/GET%20apiv1sensorshistory.png)
 
+
 ---
 
-# TODO: Rename tests and rename spec test classes
+*Project created for Feefty from Harvest Groupe*
