@@ -642,6 +642,14 @@ Remove `dist/` and `generated/`
 ```shell
 npm run clean
 ```
+Run linter pour checker
+```shell
+npm run lint 
+```
+Fix code format with linter
+```shell
+npm run format 
+```
 
 ### Test
 
