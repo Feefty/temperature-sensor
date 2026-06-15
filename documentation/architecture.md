@@ -1,4 +1,6 @@
-# Temperature Sensor API Architecture Documentation (Version PDF Disponible Aussi)
+# Temperature Sensor API Architecture Documentation
+
+# [Documentation en Version PDF](./architecture.pdf)
 
 ## Table of Contents
 
