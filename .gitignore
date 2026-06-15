@@ -396,3 +396,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+#
+REVIEW_CANDIDATE.md
+dist
+*.tsbuildinfo
