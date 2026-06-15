@@ -21,6 +21,25 @@
 
 ---
 
+## Start The Application
+
+Start the db
+```shell
+docker compose up -d postgres
+```
+
+Build & Start the app
+```shell
+npm run start
+```
+
+Coverage report inside root/converage folder
+```shell
+npm run test:cov	
+````
+
+---
+
 ## 1. Framework Choice
 
 ### Why NestJS over Express?
