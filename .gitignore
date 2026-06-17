@@ -401,3 +401,4 @@ FodyWeavers.xsd
 REVIEW_CANDIDATE.md
 dist
 *.tsbuildinfo
+data/
