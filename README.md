@@ -42,7 +42,7 @@ The API will then listen on `http://localhost:3001`.
 
 ### Sensor Configuration
 
-No physical sensor integration is provided by the exercise. The included adapter simulates an external temperature sensor:
+No physical sensor integration is provided by the exercise. The included `TemperatureSensor` component simulates the external dependency, while its adapter exposes it through the application port:
 
 - Set `TEMPERATURE_SENSOR_FIXED_VALUE` to return a deterministic Celsius value.
 - Leave it unset to generate a value between `-10` and `45` degrees Celsius.

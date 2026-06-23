@@ -1,5 +1,3 @@
-import { TemperatureSensorPort } from '../../application/ports/temperature-sensor.port';
-
 const MINIMUM_RANDOM_TEMPERATURE = -10;
 const MAXIMUM_RANDOM_TEMPERATURE = 45;
 const FIXED_TEMPERATURE_ENVIRONMENT_KEY = 'TEMPERATURE_SENSOR_FIXED_VALUE';
@@ -15,15 +13,13 @@ export class InvalidFixedTemperatureError extends Error {
   }
 }
 
-export class ConfigurableTemperatureSensorAdapter
-  implements TemperatureSensorPort
-{
+export class TemperatureSensor {
   constructor(
     private readonly environment: Environment,
     private readonly random: () => number,
   ) {}
 
-  async readTemperature(): Promise<number> {
+  measureTemperature(): number {
     const fixedValue: string | undefined =
       this.environment[FIXED_TEMPERATURE_ENVIRONMENT_KEY];
 
